@@ -1,0 +1,15 @@
+language: python
+python:
+  - 3.6
+  - 3.7
+  # https://github.com/sdispater/poetry/issues/1487
+  # - 3.8
+before_install:
+  - pip install poetry
+install:
+  - poetry install
+script:
+  - poetry run black --check .
+  - poetry run pytest --cov=pixelmatch --cov-report xml --cov-report term-missing
+after_success:
+  - poetry run codecov
