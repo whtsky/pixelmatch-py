@@ -73,7 +73,7 @@ img_b = Image.open("b.png")
 width, height = img_a.size
 
 data_a = pil_to_flatten_data(img_a)
-data_b = pil_to_flatten_data(img_a)
+data_b = pil_to_flatten_data(img_b)
 data_diff = [0] * len(data_a)
 
 mismatch = pixelmatch(data_a, data_b, width, height, data_diff, {
