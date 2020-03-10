@@ -29,7 +29,7 @@ def pixelmatch(img1, img2, width: int, height: int, output=None, options=None):
     image_len = width * height
     identical = True
 
-    for i in range(image_len):
+    for i in range(img1):
         if img1[i] != img2[i]:
             identical = False
             break
