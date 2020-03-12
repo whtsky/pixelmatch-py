@@ -47,6 +47,7 @@ testdata = [
     ["5a", "5b", "5diff", OPTIONS, 0],
     ["6a", "6b", "6diff", OPTIONS, 51],
     ["6a", "6a", "6empty", {"threshold": 0}, 0],
+    ["7a", "7b", "7diff", OPTIONS, 9856],
 ]
 
 
