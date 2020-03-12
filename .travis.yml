@@ -2,14 +2,17 @@ language: python
 python:
   - 3.6
   - 3.7
-  # https://github.com/sdispater/poetry/issues/1487
-  # - 3.8
+  - 3.8
+  - nightly
 before_install:
-  - pip install poetry
+  - python -m pip install -U pip setuptools wheel twine
+  - python -m pip install poetry
 install:
   - poetry install
 script:
   - poetry run black --check .
   - poetry run pytest --cov=pixelmatch --cov-report xml --cov-report term-missing
+  - poetry build
+  - twine check dist/pixelmatch*
 after_success:
   - poetry run codecov

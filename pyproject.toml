@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "A pixel-level image comparison library. Python port of https://github.com/mapbox/pixelmatch"
 authors = ["Wu Haotian <whtsky@gmail.com>"]
 license = "ISC"
+readme = "README.md"
+repository = "https://github.com/whtsky/pixelmatch-py"
 
 [tool.poetry.dependencies]
 python = "^3.6"
