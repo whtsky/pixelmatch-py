@@ -23,7 +23,7 @@ Implements ideas from the following papers:
 ## Install
 
 ```bash
-pip install pixelmatch
+python -m pip install pixelmatch
 ```
 
 ## API
@@ -83,14 +83,18 @@ img_diff.save("diff.png")
 
 ## Example output
 
-| expected             | actual               | diff                         |
-| -------------------- | -------------------- | ---------------------------- |
-| ![](fixtures/4a.png) | ![](fixtures/4b.png) | ![1diff](fixtures/4diff.png) |
-| ![](fixtures/3a.png) | ![](fixtures/3b.png) | ![1diff](fixtures/3diff.png) |
-| ![](fixtures/6a.png) | ![](fixtures/6b.png) | ![1diff](fixtures/6diff.png) |
-| ![](fixtures/7a.png) | ![](fixtures/7b.png) | ![1diff](fixtures/7diff.png) |
+| expected                                                                                                                                  | actual                                                                                                                                    | diff                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/4a.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/4a.png) | ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/4b.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/4b.png) | ![1diff](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/4diff.png) |
+| ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/3a.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/3a.png) | ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/3b.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/3b.png) | ![1diff](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/3diff.png) |
+| ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/6a.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/6a.png) | ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/6b.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/6b.png) | ![1diff](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/6diff.png) |
+| ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/7a.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/7a.png) | ![https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/7b.png](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/7b.png) | ![1diff](https://github.com/whtsky/pixelmatch-py/raw/master/fixtures/7diff.png) |
 
 ## Changelog
+
+### vnext
+
+- docs: use absolute url for images in READM
 
 ### v0.1.1
 
