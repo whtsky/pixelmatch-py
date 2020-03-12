@@ -26,14 +26,6 @@ Implements ideas from the following papers:
 pip install pixelmatch
 ```
 
-## Example output
-
-| expected             | actual               | diff                         |
-| -------------------- | -------------------- | ---------------------------- |
-| ![](fixtures/4a.png) | ![](fixtures/4b.png) | ![1diff](fixtures/4diff.png) |
-| ![](fixtures/3a.png) | ![](fixtures/3b.png) | ![1diff](fixtures/3diff.png) |
-| ![](fixtures/6a.png) | ![](fixtures/6b.png) | ![1diff](fixtures/6diff.png) |
-
 ## API
 
 ### pixelmatch(img1, img2, width, height[output, options])
@@ -88,3 +80,22 @@ def flatten_data_to_pil(data):
 img_diff.putdata(flatten_data_to_pil(data_diff))
 img_diff.save("diff.png")
 ```
+
+## Example output
+
+| expected             | actual               | diff                         |
+| -------------------- | -------------------- | ---------------------------- |
+| ![](fixtures/4a.png) | ![](fixtures/4b.png) | ![1diff](fixtures/4diff.png) |
+| ![](fixtures/3a.png) | ![](fixtures/3b.png) | ![1diff](fixtures/3diff.png) |
+| ![](fixtures/6a.png) | ![](fixtures/6b.png) | ![1diff](fixtures/6diff.png) |
+| ![](fixtures/7a.png) | ![](fixtures/7b.png) | ![1diff](fixtures/7diff.png) |
+
+## Changelog
+
+### v0.1.1
+
+- fix: fix bug in fast path [#18](https://github.com/whtsky/pixelmatch-py/pull/18)
+
+### v0.1.0
+
+- Initial release
