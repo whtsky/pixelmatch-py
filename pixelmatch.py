@@ -25,19 +25,10 @@ def pixelmatch(img1, img2, width: int, height: int, output=None, options=None):
     else:
         options = DEFAULT_OPTIONS
 
-    # check if images are identical
-    image_len = width * height
-    identical = True
-
-    for i in range(image_len):
-        if img1[i] != img2[i]:
-            identical = False
-            break
-
     # fast path if identical
-    if identical:
+    if img1 == img2:
         if output and not options["diff_mask"]:
-            for i in range(image_len):
+            for i in range(width * height):
                 draw_gray_pixel(img1, 4 * i, options["alpha"], output)
 
         return 0
