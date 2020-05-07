@@ -90,7 +90,7 @@ def pixelmatch(
             for i in range(width * height):
                 draw_gray_pixel(img1, 4 * i, alpha, output)
             if output_image is not None:
-                output_image.putdata()
+                output_image.putdata(to_PIL_image_data(output))
 
         return 0
 
@@ -288,6 +288,7 @@ def draw_gray_pixel(img, i: int, alpha, output):
     val = blend(rgb2y(r, g, b), alpha * img[i + 3] / 255)
     draw_pixel(output, i, val, val, val)
 
+
 def to_PIL_image_data(raw: ImageData):
     return [*zip(raw[::4], raw[1::4], raw[2::4], raw[3::4])]
 
@@ -303,9 +304,7 @@ def extract_size_and_convert_to_image_array(img: PILImageOrImageArray):
     return None, img
 
 
-@functools.lru_cache()
 def is_PIL_image(img: PILImageOrImageArray):
     return (
-        all(hasattr(img, attr) for attr in ["convert", "getdata"])
-        and type(img).__name__ == "Image"
+        all(hasattr(img, attr) for attr in ["convert", "getdata", "putdata"]) and "Image" in type(img).__name__
     )
