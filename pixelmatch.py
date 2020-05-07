@@ -3,16 +3,16 @@ from typing import Sequence, Union, List, Tuple
 
 
 ImageData = List[int]
-PILImageOrImageArray = Union["Image", Sequence[float]]
+PILImageOrImageSequence = Union["Image", Sequence[float]]
 RGBTuple = Tuple[int, int, int]
 
 
 def pixelmatch(
-    img1: PILImageOrImageArray,
-    img2: PILImageOrImageArray,
+    img1: PILImageOrImageSequence,
+    img2: PILImageOrImageSequence,
     width: int = None,
     height: int = None,
-    output: PILImageOrImageArray = None,
+    output: PILImageOrImageSequence = None,
     threshold: float = 0.1,
     includeAA: bool = False,
     alpha: float = 0.1,
@@ -292,9 +292,9 @@ def to_PIL_image_data(raw: ImageData):
     return [*zip(raw[::4], raw[1::4], raw[2::4], raw[3::4])]
 
 
-def extract_size_and_convert_to_image_array(img: PILImageOrImageArray):
+def extract_size_and_convert_to_image_array(img: PILImageOrImageSequence):
     """
-    Takes a img of type PILImageOrImageArray and extracts the size information from it if possible.
+    Takes a img of type PILImageOrImageSequence and extracts the size information from it if possible.
     :param img: PIL.Image or sequence in the format [R1, G1, B1, A1, R2, ...]
     :return: tuple of size, list of image data in the format [R1, G1, B1, A1, R2, ...]
     """
@@ -303,7 +303,15 @@ def extract_size_and_convert_to_image_array(img: PILImageOrImageArray):
     return None, img
 
 
-def is_PIL_image(img: PILImageOrImageArray):
+def is_PIL_image(img: PILImageOrImageSequence):
+    """
+    Guesses whether an object, img, is an instance of PIL.Image (or its subclasses)
+    examining the attributes of img, and the name. If it has certain properties (almost)
+    exclusive to a PIL.Image instance and contains 'Image' in its name, it is assumed that
+    img is an instance of PIL.Image
+    :param img: 
+    :return:
+    """
     return (
         all(hasattr(img, attr) for attr in ["convert", "getdata", "putdata"])
         and "Image" in type(img).__name__
