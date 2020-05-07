@@ -17,7 +17,7 @@ num_diff_pixels = pixelmatch(img1, img2, 800, 600, diff, {
 
 Implements ideas from the following papers:
 
-- [Measuring perceived color difference using YIQ NTSC transmission color space in mobile applications](http://www.progmat.uaem.mx:8080/artVol2Num2/Articulo3Vol2Num2.pdf) (2010, Yuriy Kotsarenko, Fernando Ramos)
+- [Measuring perceived color difference using YIQ NTSC transmission color space in mobile applications](https://pdfs.semanticscholar.org/cb71/56034b6e427ddc9b5da1a4f5fcb10831c9fd.pdf) (2010, Yuriy Kotsarenko, Fernando Ramos)
 - [Anti-aliased pixel and intensity slope detector](https://www.researchgate.net/publication/234126755_Anti-aliased_Pixel_and_Intensity_Slope_Detector) (2009, Vytautas Vyšniauskas)
 
 ## Install
