@@ -72,3 +72,36 @@ def test_pixelmatch(
     assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"
+
+
+def test_accepts_kwargs():
+    imga_path, imgb_path, img_diff, options, mismatched_num = "1a", "1b", "1diff", OPTIONS, 143
+    img1 = read_img(imga_path)
+    img2 = read_img(imgb_path)
+    width, height = img1.size
+    img1_data = pil_to_flatten_data(img1)
+    img2_data = pil_to_flatten_data(img2)
+    diff_data = [0] * len(img1_data)
+
+    mismatch = pixelmatch(img1_data, img2_data, width, height, diff_data, **options)
+    mismatch2 = pixelmatch(img1_data, img2_data, width, height, None, **options)
+
+    expected_diff = read_img(img_diff)
+    assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
+    assert mismatch == mismatched_num, "number of mismatched pixels"
+    assert mismatch == mismatch2, "number of mismatched pixels without diff"
+
+
+def test_works_with_PIL_image():
+    imga_path, imgb_path, img_diff, options, mismatched_num = "1a", "1b", "1diff", OPTIONS, 143
+    img1 = read_img(imga_path)
+    img2 = read_img(imgb_path)
+    diff_data = [0] * len(pil_to_flatten_data(img1))
+
+    mismatch = pixelmatch(img1, img2, img1.width, img1.height, diff_data, options)
+    mismatch2 = pixelmatch(img1, img2, img1.width, img1.height, None, options)
+
+    expected_diff = read_img(img_diff)
+    assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
+    assert mismatch == mismatched_num, "number of mismatched pixels"
+    assert mismatch == mismatch2, "number of mismatched pixels without diff"
