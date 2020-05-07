@@ -65,20 +65,23 @@ def pixelmatch(
     if len(img1) != len(img2):
         raise ValueError("Image sizes do not match.", len(img1), len(img2))
     if output and len(output) != len(img1):
-        raise ValueError("Diff image size does not match img1 & img2.", len(img1), len(output))
+        raise ValueError(
+            "Diff image size does not match img1 & img2.", len(img1), len(output)
+        )
 
     width = width or width1 or width2
     height = height or height1 or height2
     if width is None or height is None:
-        raise ValueError("Width or height couldn't be determined from the image input. Width and Height are only "
-                         "automatically calculated when img1 or img2 is a PIL.Image")
+        raise ValueError(
+            "Width or height couldn't be determined from the image input. Width and Height are only "
+            "automatically calculated when img1 or img2 is a PIL.Image"
+        )
     if len(img1) != width * height * 4:
         raise ValueError(
             "Image data size does not match width/height.",
             len(img1),
             width * height * 4,
         )
-
 
     # fast path if identical
     if img1 == img2:
@@ -218,7 +221,7 @@ def has_many_siblings(img, x1, y1, width, height):
     return False
 
 
-def color_delta(img1: ImageData, img2: ImageData, k: int, m: int, y_only: bool=False):
+def color_delta(img1: ImageData, img2: ImageData, k: int, m: int, y_only: bool = False):
     """
     calculate color difference according to the paper "Measuring perceived color difference
     using YIQ NTSC transmission color space in mobile applications" by Y. Kotsarenko and F. Ramos
@@ -302,5 +305,6 @@ def extract_size_and_convert_to_image_array(img: PILImageOrImageArray):
 
 def is_PIL_image(img: PILImageOrImageArray):
     return (
-        all(hasattr(img, attr) for attr in ["convert", "getdata", "putdata"]) and "Image" in type(img).__name__
+        all(hasattr(img, attr) for attr in ["convert", "getdata", "putdata"])
+        and "Image" in type(img).__name__
     )

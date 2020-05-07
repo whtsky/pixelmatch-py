@@ -76,11 +76,12 @@ def test_pixelmatch(
 
 
 @pytest.mark.parametrize(
-    "img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify_size", itertools.product([True, False], repeat=4)
+    "img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify_size",
+    itertools.product([True, False], repeat=4),
 )
 def test_works_with_PIL_Image(img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify_size):
     img_a_path, img_b_path, diff1_path, options, expected_mismatch = testdata[0]
-    
+
     img_a_data = read_img(img_a_path)
     img_sizes = img_a_data.size
     if not img_a_is_PIL:
@@ -90,12 +91,12 @@ def test_works_with_PIL_Image(img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify
     if not img_b_is_PIL:
         img_b_data = pil_to_flatten_data(img_b_data)
 
-    diff_data = Image.new('RGBA', img_sizes)
+    diff_data = Image.new("RGBA", img_sizes)
     if not output_is_PIL:
         diff_data = pil_to_flatten_data(diff_data)
 
     if specify_size or (not img_a_is_PIL and not img_b_is_PIL):
-        options['width'], options['height'] = img_sizes
+        options["width"], options["height"] = img_sizes
 
     mismatch = pixelmatch(img_a_data, img_b_data, output=diff_data, **options)
     mismatch2 = pixelmatch(img_a_data, img_b_data, **options)
@@ -108,4 +109,3 @@ def test_works_with_PIL_Image(img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify
 
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"
-
