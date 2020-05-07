@@ -1,33 +1,58 @@
 import functools
-from typing import Sequence, Union, List
+from typing import Sequence, Union, List, Tuple
 
 try:
     from PIL import ImageDraw
 except ImportError:
     ImageDraw = False
 
-DEFAULT_OPTIONS = {
-    "threshold": 0.1,  # matching threshold (0 to 1); smaller is more sensitive
-    "includeAA": False,  # whether to skip anti-aliasing detection
-    "alpha": 0.1,  # opacity of original image in diff ouput
-    "aa_color": [255, 255, 0],  # color of anti-aliased pixels in diff output
-    "diff_color": [255, 0, 0],  # color of different pixels in diff output
-    "diff_mask": False,  # draw the diff over a transparent background (a mask)
-}
+
 
 ImageData = List[int]
-ImageOrImageArray = Union["Image", Sequence[float]]
+PILImageOrImageArray = Union["Image", Sequence[float]]
+RGBTuple = Tuple[int, int, int]
 
 
 def pixelmatch(
-    img1: ImageOrImageArray,
-    img2: ImageOrImageArray,
+    img1: PILImageOrImageArray,
+    img2: PILImageOrImageArray,
     width: int = None,
     height: int = None,
-    output: ImageOrImageArray = None,
-    options=None,
-    **kwargs,
+    output: PILImageOrImageArray = None,
+    threshold: float = 0.1,
+    includeAA: bool = False,
+    alpha: float = 0.1,
+    aa_color: RGBTuple = (255, 255, 0),
+    diff_color: RGBTuple = (255, 0, 0),
+    diff_mask: bool = False,
 ):
+    """
+    Compares two images, writes the output diff and returns the number of mismatched pixels.
+    'Raw image data' refers to a 1D, indexable collection of image data in the
+    format [R1, G1, B1, A1, R2, G2, ...].
+
+    :param img1: Image data to compare with img2. Can be PIL.Image or raw image data.
+        Must be the same size as img2
+    :param img2: Image data to compare with img2. Can be PIL.Image or raw image data.
+        Must be the same size as img1
+    :param width: Width of both images (they should be the same). If img1 or img2 is an instance of PIL.Image,
+        the width will be extracted and used.
+    :param height: Height of both images (they should be the same). If img1 or img2 is an instance of PIL.Image,
+        the height will be extracted and used.
+    :param output: Image data to write the diff to. Should be the same size as
+    :param threshold: matching threshold (0 to 1); smaller is more sensitive, defaults to 1
+    :param includeAA: whether or not to skip anti-aliasing detection, ie if includeAA is True,
+        detecting and ignoring anti-aliased pixels is disabled. Defaults to False
+    :param alpha: opacity of original image in diff output, defaults to 0.1
+    :param aa_color: tuple of RGB color of anti-aliased pixels in diff output,
+        defaults to (255, 255, 0) (yellow)
+    :param diff_color: tuple of RGB color of the color of different pixels in diff output,
+        defaults to (255, 0, 0) (red)
+    :param diff_mask: whether or not to draw the diff over a transparent background (a mask),
+        defaults to False
+    :return: number of pixels that are different
+    """
+
     img1_size, img1 = extract_size_and_convert_to_image_array(img1)
     img2_size, img2 = extract_size_and_convert_to_image_array(img2)
 
@@ -41,12 +66,15 @@ def pixelmatch(
     else:
         width2, height2 = width, height
 
-    if len(img1) != len(img2) or (output and len(output) != len(img1)):
-        raise ValueError("Image sizes do not match.", len(img1), len(img2), len(output))
-    if width2 != width1 or height2 != height1:
-        raise ValueError(
-            f"Image sizes do not match: {width1}x{height1} vs {width2}x{height2}"
-        )
+    output_image = None
+    if is_PIL_image(output):
+        output_image = output
+        _, output = extract_size_and_convert_to_image_array(output_image)
+
+    if len(img1) != len(img2):
+        raise ValueError("Image sizes do not match.", len(img1), len(img2))
+    if output and len(output) != len(img1):
+        raise ValueError("Diff image size does not match img1 & img2.", len(img1), len(output))
 
     if len(img1) != width * height * 4:
         raise ValueError(
@@ -55,28 +83,24 @@ def pixelmatch(
             width * height * 4,
         )
 
-    options = options or {}
-    options = {**DEFAULT_OPTIONS, **options, **kwargs}
 
     # fast path if identical
     if img1 == img2:
-        if output and not options["diff_mask"]:
-            if not is_PIL_image(output):
-                for i in range(width * height):
-                    draw_gray_pixel(img1, 4 * i, options["alpha"], output)
-            else:
-                for i in range(width * height):
-                    pass
+        if output and not diff_mask:
+            for i in range(width * height):
+                draw_gray_pixel(img1, 4 * i, alpha, output)
+            if output_image is not None:
+                output_image.putdata()
 
         return 0
 
     # maximum acceptable square distance between two colors;
     # 35215 is the maximum possible value for the YIQ difference metric
-    maxDelta = 35215 * options["threshold"] * options["threshold"]
+    maxDelta = 35215 * threshold * threshold
 
     diff = 0
-    [aaR, aaG, aaB] = options["aa_color"]
-    [diffR, diffG, diffB] = options["diff_color"]
+    aaR, aaG, aaB = aa_color
+    diffR, diffG, diffB = diff_color
 
     # compare each pixel of one image against the other one
     for y in range(height):
@@ -89,13 +113,13 @@ def pixelmatch(
             # the color difference is above the threshold
             if delta > maxDelta:
                 # check it's a real rendering difference or just anti-aliasing
-                if not options["includeAA"] and (
+                if not includeAA and (
                     antialiased(img1, x, y, width, height, img2)
                     or antialiased(img2, x, y, width, height, img1)
                 ):
                     # one of the pixels is anti-aliasing; draw as yellow and do not count as difference
                     # note that we do not include such pixels in a mask
-                    if output and not options["diff_mask"]:
+                    if output and not diff_mask:
                         draw_pixel(output, pos, aaR, aaG, aaB)
                 else:
                     # found substantial difference not caused by anti-aliasing; draw it as red
@@ -105,8 +129,11 @@ def pixelmatch(
 
             elif output:
                 # pixels are similar; draw background as grayscale image blended with white
-                if not options["diff_mask"]:
-                    draw_gray_pixel(img1, pos, options["alpha"], output)
+                if not diff_mask:
+                    draw_gray_pixel(img1, pos, alpha, output)
+
+    if output_image is not None:
+        output_image.putdata(to_PIL_image_data(output))
 
     # return the number of different pixels
     return diff
@@ -242,7 +269,7 @@ def blendRGB(r: int, g: int, b: int, a):
     return blend(r, a), blend(g, a), blend(b, a)
 
 
-def blend(c: int, a):
+def blend(c: float, a):
     """blend semi-transparent color with white"""
     return 255 + (c - 255) * a
 
@@ -261,10 +288,13 @@ def draw_gray_pixel(img, i: int, alpha, output):
     val = blend(rgb2y(r, g, b), alpha * img[i + 3] / 255)
     draw_pixel(output, i, val, val, val)
 
+def to_PIL_image_data(raw: ImageData):
+    return [*zip(raw[::4], raw[1::4], raw[2::4], raw[3::4])]
 
-def extract_size_and_convert_to_image_array(img: ImageOrImageArray):
+
+def extract_size_and_convert_to_image_array(img: PILImageOrImageArray):
     """
-    Takes a img of type ImageOrImageArray and extracts the size information from it if possible.
+    Takes a img of type PILImageOrImageArray and extracts the size information from it if possible.
     :param img: PIL.Image or sequence in the format [R1, G1, B1, A1, R2, ...]
     :return: tuple of size, list of image data in the format [R1, G1, B1, A1, R2, ...]
     """
@@ -274,7 +304,7 @@ def extract_size_and_convert_to_image_array(img: ImageOrImageArray):
 
 
 @functools.lru_cache()
-def is_PIL_image(img: ImageOrImageArray):
+def is_PIL_image(img: PILImageOrImageArray):
     return (
         all(hasattr(img, attr) for attr in ["convert", "getdata"])
         and type(img).__name__ == "Image"
