@@ -94,7 +94,7 @@ def test_works_with_PIL_Image(img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify
     if not output_is_PIL:
         diff_data = pil_to_flatten_data(diff_data)
 
-    if specify_size:
+    if specify_size or (not img_a_is_PIL and not img_b_is_PIL):
         options['width'], options['height'] = img_sizes
 
     mismatch = pixelmatch(img_a_data, img_b_data, output=diff_data, **options)

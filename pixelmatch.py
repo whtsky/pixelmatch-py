@@ -50,15 +50,12 @@ def pixelmatch(
     img1_size, img1 = extract_size_and_convert_to_image_array(img1)
     img2_size, img2 = extract_size_and_convert_to_image_array(img2)
 
+    width1 = height1 = width2 = height2 = None
     if img1_size:
         width1, height1 = img1_size
-    else:
-        width1, height1 = width, height
 
     if img2_size:
         width2, height2 = img2_size
-    else:
-        width2, height2 = width, height
 
     output_image = None
     if is_PIL_image(output):
@@ -70,6 +67,11 @@ def pixelmatch(
     if output and len(output) != len(img1):
         raise ValueError("Diff image size does not match img1 & img2.", len(img1), len(output))
 
+    width = width or width1 or width2
+    height = height or height1 or height2
+    if width is None or height is None:
+        raise ValueError("Width or height couldn't be determined from the image input. Width and Height are only "
+                         "automatically calculated when img1 or img2 is a PIL.Image")
     if len(img1) != width * height * 4:
         raise ValueError(
             "Image data size does not match width/height.",
