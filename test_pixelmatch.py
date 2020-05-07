@@ -66,8 +66,8 @@ def test_pixelmatch(
     img2_data = pil_to_flatten_data(img2)
     diff_data = [0] * len(img1_data)
 
-    mismatch = pixelmatch(img1_data, img2_data, width, height, diff_data, options)
-    mismatch2 = pixelmatch(img1_data, img2_data, width, height, None, options)
+    mismatch = pixelmatch(img1_data, img2_data, width, height, diff_data, **options)
+    mismatch2 = pixelmatch(img1_data, img2_data, width, height, None, **options)
 
     expected_diff = read_img(diff_path)
     assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
@@ -86,7 +86,7 @@ def test_works_with_PIL_Image(img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify
     if not img_a_is_PIL:
         img_a_data = pil_to_flatten_data(img_a_data)
 
-    img_b_data = read_img(img_a_path)
+    img_b_data = read_img(img_b_path)
     if not img_b_is_PIL:
         img_b_data = pil_to_flatten_data(img_b_data)
 
@@ -100,12 +100,11 @@ def test_works_with_PIL_Image(img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify
     mismatch = pixelmatch(img_a_data, img_b_data, output=diff_data, **options)
     mismatch2 = pixelmatch(img_a_data, img_b_data, **options)
 
-    expected_diff = read_img(diff1_path)
+    expected_diff = pil_to_flatten_data(read_img(diff1_path))
 
-    if not output_is_PIL:
-        assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
-    else:
-        assert pil_to_flatten_data(diff_data) == pil_to_flatten_data(expected_diff), "diff image"
+    if output_is_PIL:
+        diff_data = pil_to_flatten_data(diff_data)
+    assert diff_data == expected_diff, "diff image"
 
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"

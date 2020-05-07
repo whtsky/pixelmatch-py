@@ -1,12 +1,6 @@
 import functools
 from typing import Sequence, Union, List, Tuple
 
-try:
-    from PIL import ImageDraw
-except ImportError:
-    ImageDraw = False
-
-
 
 ImageData = List[int]
 PILImageOrImageArray = Union["Image", Sequence[float]]
@@ -222,13 +216,13 @@ def has_many_siblings(img, x1, y1, width, height):
     return False
 
 
-def color_delta(img1, img2, k: int, m, y_only=False):
+def color_delta(img1: ImageData, img2: ImageData, k: int, m: int, y_only: bool=False):
     """
     calculate color difference according to the paper "Measuring perceived color difference
     using YIQ NTSC transmission color space in mobile applications" by Y. Kotsarenko and F. Ramos
     """
-    r1, g1, b1, a1 = [img1[k + offset] for offset in range(3)]
-    r2, g2, b2, a2 = [img2[k + offset] for offset in range(3)]
+    r1, g1, b1, a1 = [img1[k + offset] for offset in range(4)]
+    r2, g2, b2, a2 = [img2[m + offset] for offset in range(4)]
 
     if a1 == a2 and r1 == r2 and g1 == g2 and b1 == b2:
         return 0
