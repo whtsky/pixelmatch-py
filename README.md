@@ -91,7 +91,8 @@ mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 
 - BREAKING CHANGE: remove `options` parameter [#38](https://github.com/whtsky/pixelmatch-py/pull/38)
 
-- docs: use absolute url for images in READM
+- ft: refactor code to be more pythonic
+- docs: use absolute url for images in README
 
 ### v0.1.1
 
