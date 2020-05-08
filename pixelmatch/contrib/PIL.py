@@ -1,7 +1,7 @@
 """Functions to facilitate direct comparison of PIL.Image instances"""
 from typing import Optional, List, Tuple
 
-from PIL.Image import Image
+from PIL.Image import Image # type: ignore
 
 from pixelmatch import (
     pixelmatch as base_pixelmatch,
@@ -47,7 +47,7 @@ def pixelmatch(
     img2 = from_PIL_to_raw_data(img2)
 
     if output is not None:
-        raw_output = from_PIL_to_raw_data(output)
+        raw_output: Optional[MutableImageSequence] = from_PIL_to_raw_data(output)
     else:
         raw_output = None
 
