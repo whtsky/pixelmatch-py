@@ -42,5 +42,5 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install poetry
       - run: poetry install
-      - run: poetry run pytest --cov=pixelmatch --cov-report xml --cov-report term-missing
+      - run: poetry run pytest --mypy --cov=pixelmatch --cov-report xml --cov-report term-missing
       - uses: codecov/codecov-action@v1.0.7
