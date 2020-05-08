@@ -69,7 +69,7 @@ def test_pixelmatch(
     width, height = img1.size
     img1_data = pil_to_flatten_data(img1)
     img2_data = pil_to_flatten_data(img2)
-    diff_data = [0] * len(img1_data)
+    diff_data = [0.0] * len(img1_data)
 
     mismatch = pixelmatch(img1_data, img2_data, width, height, diff_data, **options)
     mismatch2 = pixelmatch(img1_data, img2_data, width, height, None, **options)

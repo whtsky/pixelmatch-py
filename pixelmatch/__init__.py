@@ -19,7 +19,7 @@ def pixelmatch(
     aa_color: RGBTuple = (255, 255, 0),
     diff_color: RGBTuple = (255, 0, 0),
     diff_mask: bool = False,
-):
+) -> int:
     """
     Compares two images, writes the output diff and returns the number of mismatched pixels.
     'Raw image data' refers to a 1D, indexable collection of image data in the
@@ -225,19 +225,19 @@ def color_delta(
     return 0.5053 * y * y + 0.299 * i * i + 0.1957 * q * q
 
 
-def rgb2y(r: int, g: int, b: int):
+def rgb2y(r: float, g: float, b: float):
     return r * 0.29889531 + g * 0.58662247 + b * 0.11448223
 
 
-def rgb2i(r: int, g: int, b: int):
+def rgb2i(r: float, g: float, b: float):
     return r * 0.59597799 - g * 0.27417610 - b * 0.32180189
 
 
-def rgb2q(r: int, g: int, b: int):
+def rgb2q(r: float, g: float, b: float):
     return r * 0.21147017 - g * 0.52261711 + b * 0.31114694
 
 
-def blendRGB(r: int, g: int, b: int, a: int):
+def blendRGB(r: float, g: float, b: float, a: float):
     """
     Blend r, g, and b with a
     :param r: red channel to blend with a
@@ -249,19 +249,19 @@ def blendRGB(r: int, g: int, b: int, a: int):
     return blend(r, a), blend(g, a), blend(b, a)
 
 
-def blend(c: float, a: int):
+def blend(c: float, a: float):
     """blend semi-transparent color with white"""
     return 255 + (c - 255) * a
 
 
-def draw_pixel(output: MutableImageSequence, pos: int, r: int, g: int, b: int):
+def draw_pixel(output: MutableImageSequence, pos: int, r: float, g: float, b: float):
     output[pos + 0] = int(r)
     output[pos + 1] = int(g)
     output[pos + 2] = int(b)
     output[pos + 3] = 255
 
 
-def draw_gray_pixel(img: MutableImageSequence, i: int, alpha, output):
+def draw_gray_pixel(img: ImageSequence, i: int, alpha: float, output: MutableImageSequence):
     r = img[i + 0]
     g = img[i + 1]
     b = img[i + 2]
