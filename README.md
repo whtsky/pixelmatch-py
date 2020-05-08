@@ -10,9 +10,7 @@ and **perceptual color difference metrics**.
 ```python
 from pixelmatch import pixelmatch
 
-num_diff_pixels = pixelmatch(img1, img2, 800, 600, diff, {
-  'threshold': 0.1
-})
+num_diff_pixels = pixelmatch(img1, img2, 800, 600, diff, threshold=0.1)
 ```
 
 Implements ideas from the following papers:
@@ -88,7 +86,9 @@ img_diff.save("diff.png")
 
 ## Changelog
 
-### vnext
+### v0.2.0
+
+- BREAKING CHANGE: remove `options` parameter [#38](https://github.com/whtsky/pixelmatch-py/pull/38)
 
 - docs: use absolute url for images in READM
 

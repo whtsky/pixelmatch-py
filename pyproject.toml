@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pixelmatch"
-version = "0.1.1"
+version = "0.2.0"
 description = "A pixel-level image comparison library. Python port of https://github.com/mapbox/pixelmatch"
 authors = ["Wu Haotian <whtsky@gmail.com>"]
 license = "ISC"
