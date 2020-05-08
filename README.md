@@ -90,7 +90,8 @@ img_diff.save("diff.png")
 
 ### vnext
 
-- docs: use absolute url for images in READM
+- ft: refactor code to be more pythonic
+- docs: use absolute url for images in README
 
 ### v0.1.1
 
