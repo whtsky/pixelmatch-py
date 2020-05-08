@@ -1,8 +1,10 @@
 from typing import Union, List, Tuple, MutableSequence, Sequence
 
-ImageSequence = Sequence[float]
-MutableImageSequence = MutableSequence[float]
-RGBTuple = Union[Tuple[float, float, float], List[float]]
+# note: this shouldn't be necessary, but apparently is
+Number = Union[int, float]
+ImageSequence = Sequence[Number]
+MutableImageSequence = MutableSequence[Number]
+RGBTuple = Union[Tuple[Number, Number, Number], List[Number]]
 
 
 def pixelmatch(
