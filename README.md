@@ -28,13 +28,11 @@ python -m pip install pixelmatch
 
 ## API
 
-### pixelmatch(img1, img2, width, height[output, options])
+### pixelmatch(img1, img2, width, height, output, threshold, includeAA, alpha, aa_color, diff_color, diff_mask)
 
 - `img1`, `img2` — RGBA Image data of the images to compare. **Note:** image dimensions must be equal.
 - `width`, `height` — Width and height of the images.
 - `output` — Image data to write the diff to, or `None` if don't need a diff image. Note that _all three images_ need to have the same dimensions.
-  `options` is a dict with the following properties:
-
 - `threshold` — Matching threshold, ranges from `0` to `1`. Smaller values make the comparison more sensitive. `0.1` by default.
 - `includeAA` — If `true`, disables detecting and ignoring anti-aliased pixels. `false` by default.
 - `alpha` — Blending factor of unchanged pixels in the diff output. Ranges from `0` for pure white to `1` for original brightness. `0.1` by default.
@@ -68,9 +66,7 @@ data_a = pil_to_flatten_data(img_a)
 data_b = pil_to_flatten_data(img_b)
 data_diff = [0] * len(data_a)
 
-mismatch = pixelmatch(data_a, data_b, width, height, data_diff, {
-    "includeAA": True
-})
+mismatch = pixelmatch(data_a, data_b, width, height, data_diff, includeAA=True)
 
 img_diff = Image.new("RGBA", img_a.size)
 
@@ -94,6 +90,7 @@ img_diff.save("diff.png")
 
 ### vnext
 
+- ft: refactor code to be more pythonic
 - docs: use absolute url for images in README
 
 ### v0.1.1

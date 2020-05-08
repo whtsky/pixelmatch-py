@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict
 
 import pytest
 from PIL import Image
@@ -55,7 +56,11 @@ testdata = [
     "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
 )
 def test_pixelmatch(
-    img_path_1: str, img_path_2: str, diff_path: str, options, expected_mismatch: int
+    img_path_1: str,
+    img_path_2: str,
+    diff_path: str,
+    options: Dict,
+    expected_mismatch: int,
 ):
 
     img1 = read_img(img_path_1)
@@ -63,10 +68,10 @@ def test_pixelmatch(
     width, height = img1.size
     img1_data = pil_to_flatten_data(img1)
     img2_data = pil_to_flatten_data(img2)
-    diff_data = [0] * len(img1_data)
+    diff_data = [0.0] * len(img1_data)
 
-    mismatch = pixelmatch(img1_data, img2_data, width, height, diff_data, options)
-    mismatch2 = pixelmatch(img1_data, img2_data, width, height, None, options)
+    mismatch = pixelmatch(img1_data, img2_data, width, height, diff_data, **options)
+    mismatch2 = pixelmatch(img1_data, img2_data, width, height, None, **options)
 
     expected_diff = read_img(diff_path)
     assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
