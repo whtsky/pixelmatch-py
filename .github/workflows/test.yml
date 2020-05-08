@@ -1,5 +1,5 @@
-on: push
 name: Main workflow
+on: [push, pull_request]
 jobs:
   twine-check:
     name: twine check
