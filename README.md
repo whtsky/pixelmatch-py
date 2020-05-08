@@ -10,12 +10,14 @@ and **perceptual color difference metrics**.
 ```python
 from pixelmatch import pixelmatch
 
-num_diff_pixels = pixelmatch(img1, img2, 800, 600, diff, threshold=0.1)
+num_diff_pixels = pixelmatch(img1, img2, 800, 600, diff, {
+  'threshold': 0.1
+})
 ```
 
 Implements ideas from the following papers:
 
-- [Measuring perceived color difference using YIQ NTSC transmission color space in mobile applications](http://www.progmat.uaem.mx:8080/artVol2Num2/Articulo3Vol2Num2.pdf) (2010, Yuriy Kotsarenko, Fernando Ramos)
+- [Measuring perceived color difference using YIQ NTSC transmission color space in mobile applications](https://pdfs.semanticscholar.org/cb71/56034b6e427ddc9b5da1a4f5fcb10831c9fd.pdf) (2010, Yuriy Kotsarenko, Fernando Ramos)
 - [Anti-aliased pixel and intensity slope detector](https://www.researchgate.net/publication/234126755_Anti-aliased_Pixel_and_Intensity_Slope_Detector) (2009, Vytautas Vyšniauskas)
 
 ## Install
@@ -26,11 +28,11 @@ python -m pip install pixelmatch
 
 ## API
 
-### pixelmatch(img1, img2, width, height[output, options])
+### pixelmatch(img1, img2, width, height, output, threshold, includeAA, alpha, aa_color, diff_color, diff_mask)
 
-- `img1`, `img2` — Image data in the format `[R1, G1, B1, A1, R2, G2, ...]` to compare **Note:** image dimensions must be equal.
-- `width`, `height` — Width and height of the images. 
-- `output` — Image data to write the diff to, or `None` if don't need a diff image. Must be List-like (specifically, a *mutable* [sequence](https://docs.python.org/3/glossary.html#term-sequence)) containing raw image data. Note that _all three images_ need to have the same dimensions.
+- `img1`, `img2` — RGBA Image data of the images to compare. **Note:** image dimensions must be equal.
+- `width`, `height` — Width and height of the images.
+- `output` — Image data to write the diff to, or `None` if don't need a diff image. Note that _all three images_ need to have the same dimensions.
 - `threshold` — Matching threshold, ranges from `0` to `1`. Smaller values make the comparison more sensitive. `0.1` by default.
 - `includeAA` — If `true`, disables detecting and ignoring anti-aliased pixels. `false` by default.
 - `alpha` — Blending factor of unchanged pixels in the diff output. Ranges from `0` for pure white to `1` for original brightness. `0.1` by default.
@@ -88,8 +90,7 @@ img_diff.save("diff.png")
 
 ### vnext
 
-- ft: overhaul module to be more pythonic [#38](https://github.com/whtsky/pixelmatch-py/pull/36)
-- docs: use absolute url for images in README 
+- docs: use absolute url for images in READM
 
 ### v0.1.1
 
