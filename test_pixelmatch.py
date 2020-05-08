@@ -4,6 +4,7 @@ from typing import Dict
 
 import pytest
 from PIL import Image
+from pixelmatch.contrib import PIL
 
 from pixelmatch import pixelmatch
 
@@ -78,3 +79,24 @@ def test_pixelmatch(
     assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"
+
+@pytest.mark.parametrize(
+    "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
+)
+def test_PIL_pixelmatch(
+        img_path_1: str,
+        img_path_2: str,
+        diff_path: str,
+        options: Dict,
+        expected_mismatch: int,
+):
+        img1 = read_img(img_path_1)
+        img2 = read_img(img_path_2)
+        diff_data = Image.new('RGBA', img1.size)
+
+        mismatch = PIL.pixelmatch(img1, img2, diff_data, **options)
+        mismatch2 = PIL.pixelmatch(img1, img2, **options)
+
+        assert pil_to_flatten_data(diff_data) == pil_to_flatten_data(read_img(diff_path)), "diff image"
+        assert mismatch == expected_mismatch, "number of mismatched pixels"
+        assert mismatch == mismatch2, "number of mismatched pixels without diff"
