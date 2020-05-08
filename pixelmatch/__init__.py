@@ -1,9 +1,7 @@
-import functools
-from typing import Sequence, Union, List, Tuple
+from typing import Union, List, Tuple, MutableSequence, Sequence
 
-
-ImageData = List[int]
 ImageSequence = Sequence[float]
+MutableImageSequence = MutableSequence[float]
 RGBTuple = Union[Tuple[float, float, float], List[float]]
 
 
@@ -12,7 +10,7 @@ def pixelmatch(
     img2: ImageSequence,
     width: int,
     height: int,
-    output: ImageData = None,
+    output: MutableImageSequence = None,
     threshold: float = 0.1,
     includeAA: bool = False,
     alpha: float = 0.1,
@@ -190,7 +188,7 @@ def has_many_siblings(img: ImageSequence, x1: int, y1: int, width: int, height: 
     return False
 
 
-def color_delta(img1: ImageData, img2: ImageData, k: int, m: int, y_only: bool = False):
+def color_delta(img1: ImageSequence, img2: ImageSequence, k: int, m: int, y_only: bool = False):
     """
     calculate color difference according to the paper "Measuring perceived color difference
     using YIQ NTSC transmission color space in mobile applications" by Y. Kotsarenko and F. Ramos
@@ -233,7 +231,7 @@ def rgb2q(r: int, g: int, b: int):
     return r * 0.21147017 - g * 0.52261711 + b * 0.31114694
 
 
-def blendRGB(r: int, g: int, b: int, a):
+def blendRGB(r: int, g: int, b: int, a: int):
     """
     Blend r, g, and b with a
     :param r: red channel to blend with a
@@ -245,19 +243,19 @@ def blendRGB(r: int, g: int, b: int, a):
     return blend(r, a), blend(g, a), blend(b, a)
 
 
-def blend(c: float, a):
+def blend(c: float, a: int):
     """blend semi-transparent color with white"""
     return 255 + (c - 255) * a
 
 
-def draw_pixel(output, pos: int, r: int, g: int, b: int):
+def draw_pixel(output: MutableImageSequence, pos: int, r: int, g: int, b: int):
     output[pos + 0] = int(r)
     output[pos + 1] = int(g)
     output[pos + 2] = int(b)
     output[pos + 3] = 255
 
 
-def draw_gray_pixel(img, i: int, alpha, output):
+def draw_gray_pixel(img: MutableImageSequence, i: int, alpha, output):
     r = img[i + 0]
     g = img[i + 1]
     b = img[i + 2]
