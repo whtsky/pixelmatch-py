@@ -1,6 +1,6 @@
 # pixelmatch-py
 
-Python port of https://github.com/mapbox/pixelmatch with some additional support for PIL.Image objects.
+Python port of https://github.com/mapbox/pixelmatch.
 
 A fast pixel-level image comparison library, originally created to compare screenshots in tests.
 
@@ -28,10 +28,9 @@ python -m pip install pixelmatch
 
 ### pixelmatch(img1, img2, width, height[output, options])
 
-- `img1`, `img2` — Image data to compare. Can be PIL.Image or raw image data in the format `[R1, G1, B1, A1, R2, G2, ...]`.
-        **Note:** image dimensions must be equal.
-- `width`, `height` — Width and height of the images. If left unspecified and either of `img1` and `img2` are instances of `PIL.Image`, the dimensions will be extracted from there. 
-- `output` — Image data to write the diff to, or `None` if don't need a diff image. Can be a list containing raw image data or instance of `PIL.Image`. Note that _all three images_ need to have the same dimensions.
+- `img1`, `img2` — Image data in the format `[R1, G1, B1, A1, R2, G2, ...]` to compare **Note:** image dimensions must be equal.
+- `width`, `height` — Width and height of the images. 
+- `output` — Image data to write the diff to, or `None` if don't need a diff image. Must be List-like (specifically, a *mutable* [sequence](https://docs.python.org/3/glossary.html#term-sequence)) containing raw image data. Note that _all three images_ need to have the same dimensions.
 - `threshold` — Matching threshold, ranges from `0` to `1`. Smaller values make the comparison more sensitive. `0.1` by default.
 - `includeAA` — If `true`, disables detecting and ignoring anti-aliased pixels. `false` by default.
 - `alpha` — Blending factor of unchanged pixels in the diff output. Ranges from `0` for pure white to `1` for original brightness. `0.1` by default.
@@ -50,10 +49,29 @@ from PIL import Image
 
 from pixelmatch import pixelmatch
 
+
+def pil_to_flatten_data(img):
+    """
+    Convert data from [(R1, G1, B1, A1), (R2, G2, B2, A2)] to [R1, G1, B1, A1, R2, G2, B2, A2]
+    """
+    return [x for p in img.convert("RGBA").getdata() for x in p]
+
 img_a = Image.open("a.png")
 img_b = Image.open("b.png")
+width, height = img_a.size
+
+data_a = pil_to_flatten_data(img_a)
+data_b = pil_to_flatten_data(img_b)
+data_diff = [0] * len(data_a)
+
+mismatch = pixelmatch(data_a, data_b, width, height, data_diff, includeAA=True)
+
 img_diff = Image.new("RGBA", img_a.size)
-mismatch = pixelmatch(img_a, img_b, output=img_diff, includeAA=True)
+
+def flatten_data_to_pil(data):
+    return list(zip(data[::4], data[1::4], data[2::4], data[3::4]))
+
+img_diff.putdata(flatten_data_to_pil(data_diff))
 img_diff.save("diff.png")
 ```
 
@@ -71,7 +89,6 @@ img_diff.save("diff.png")
 ### vnext
 
 - ft: overhaul module to be more pythonic [#38](https://github.com/whtsky/pixelmatch-py/pull/36)
-- ft: allow direct comparision of PIL.Image instances [#38](https://github.com/whtsky/pixelmatch-py/pull/36)
 
 ### v0.1.1
 
