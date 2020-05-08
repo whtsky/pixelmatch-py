@@ -3,16 +3,16 @@ from typing import Sequence, Union, List, Tuple
 
 
 ImageData = List[int]
-PILImageOrImageSequence = Union["Image", Sequence[float]]
-RGBTuple = Tuple[int, int, int]
+ImageSequence = Sequence[float]
+RGBTuple = Union[Tuple[float, float, float], List[float]]
 
 
 def pixelmatch(
-    img1: PILImageOrImageSequence,
-    img2: PILImageOrImageSequence,
-    width: int = None,
-    height: int = None,
-    output: PILImageOrImageSequence = None,
+    img1: ImageSequence,
+    img2: ImageSequence,
+    width: int,
+    height: int,
+    output: ImageData = None,
     threshold: float = 0.1,
     includeAA: bool = False,
     alpha: float = 0.1,
@@ -25,14 +25,10 @@ def pixelmatch(
     'Raw image data' refers to a 1D, indexable collection of image data in the
     format [R1, G1, B1, A1, R2, G2, ...].
 
-    :param img1: Image data to compare with img2. Can be PIL.Image or raw image data.
-        Must be the same size as img2
-    :param img2: Image data to compare with img2. Can be PIL.Image or raw image data.
-        Must be the same size as img1
-    :param width: Width of both images (they should be the same). If img1 or img2 is an instance of PIL.Image,
-        the width will be extracted and used.
-    :param height: Height of both images (they should be the same). If img1 or img2 is an instance of PIL.Image,
-        the height will be extracted and used.
+    :param img1: Image data to compare with img2. Must be the same size as img2
+    :param img2: Image data to compare with img2. Must be the same size as img1
+    :param width: Width of both images (they should be the same).
+    :param height: Height of both images (they should be the same).
     :param output: Image data to write the diff to. Should be the same size as
     :param threshold: matching threshold (0 to 1); smaller is more sensitive, defaults to 1
     :param includeAA: whether or not to skip anti-aliasing detection, ie if includeAA is True,
@@ -47,21 +43,6 @@ def pixelmatch(
     :return: number of pixels that are different
     """
 
-    img1_size, img1 = extract_size_and_convert_to_image_array(img1)
-    img2_size, img2 = extract_size_and_convert_to_image_array(img2)
-
-    width1 = height1 = width2 = height2 = None
-    if img1_size:
-        width1, height1 = img1_size
-
-    if img2_size:
-        width2, height2 = img2_size
-
-    output_image = None
-    if is_PIL_image(output):
-        output_image = output
-        _, output = extract_size_and_convert_to_image_array(output_image)
-
     if len(img1) != len(img2):
         raise ValueError("Image sizes do not match.", len(img1), len(img2))
     if output and len(output) != len(img1):
@@ -69,13 +50,6 @@ def pixelmatch(
             "Diff image size does not match img1 & img2.", len(img1), len(output)
         )
 
-    width = width or width1 or width2
-    height = height or height1 or height2
-    if width is None or height is None:
-        raise ValueError(
-            "Width or height couldn't be determined from the image input. Width and Height are only "
-            "automatically calculated when img1 or img2 is a PIL.Image"
-        )
     if len(img1) != width * height * 4:
         raise ValueError(
             "Image data size does not match width/height.",
@@ -88,8 +62,6 @@ def pixelmatch(
         if output and not diff_mask:
             for i in range(width * height):
                 draw_gray_pixel(img1, 4 * i, alpha, output)
-            if output_image is not None:
-                output_image.putdata(to_PIL_image_data(output))
 
         return 0
 
@@ -131,14 +103,11 @@ def pixelmatch(
                 if not diff_mask:
                     draw_gray_pixel(img1, pos, alpha, output)
 
-    if output_image is not None:
-        output_image.putdata(to_PIL_image_data(output))
-
     # return the number of different pixels
     return diff
 
 
-def antialiased(img, x1, y1, width, height, img2):
+def antialiased(img: ImageSequence, x1: int, y1: int, width: int, height: int, img2: ImageSequence):
     """
     check if a pixel is likely a part of anti-aliasing;
     based on "Anti-aliased Pixel and Intensity Slope Detector" paper by V. Vysniauskas, 2009
@@ -194,7 +163,7 @@ def antialiased(img, x1, y1, width, height, img2):
     )
 
 
-def has_many_siblings(img, x1, y1, width, height):
+def has_many_siblings(img: ImageSequence, x1: int, y1: int, width: int, height: int):
     """
     check if a pixel has 3+ adjacent pixels of the same color.
     """
@@ -265,6 +234,14 @@ def rgb2q(r: int, g: int, b: int):
 
 
 def blendRGB(r: int, g: int, b: int, a):
+    """
+    Blend r, g, and b with a
+    :param r: red channel to blend with a
+    :param g: green channel to blend with a
+    :param b: blue channel to blend with a
+    :param a: alpha to blend with
+    :return: tuple of blended r, g, b
+    """
     return blend(r, a), blend(g, a), blend(b, a)
 
 
@@ -286,33 +263,3 @@ def draw_gray_pixel(img, i: int, alpha, output):
     b = img[i + 2]
     val = blend(rgb2y(r, g, b), alpha * img[i + 3] / 255)
     draw_pixel(output, i, val, val, val)
-
-
-def to_PIL_image_data(raw: ImageData):
-    return [*zip(raw[::4], raw[1::4], raw[2::4], raw[3::4])]
-
-
-def extract_size_and_convert_to_image_array(img: PILImageOrImageSequence):
-    """
-    Takes a img of type PILImageOrImageSequence and extracts the size information from it if possible.
-    :param img: PIL.Image or sequence in the format [R1, G1, B1, A1, R2, ...]
-    :return: tuple of size, list of image data in the format [R1, G1, B1, A1, R2, ...]
-    """
-    if is_PIL_image(img):
-        return img.size, [x for p in img.convert("RGBA").getdata() for x in p]
-    return None, img
-
-
-def is_PIL_image(img: PILImageOrImageSequence):
-    """
-    Guesses whether an object, img, is an instance of PIL.Image (or its subclasses)
-    examining the attributes of img, and the name. If it has certain properties (almost)
-    exclusive to a PIL.Image instance and contains 'Image' in its name, it is assumed that
-    img is an instance of PIL.Image
-    :param img: 
-    :return:
-    """
-    return (
-        all(hasattr(img, attr) for attr in ["convert", "getdata", "putdata"])
-        and "Image" in type(img).__name__
-    )

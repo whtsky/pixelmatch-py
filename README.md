@@ -68,7 +68,7 @@ img_diff.save("diff.png")
 
 ## Changelog
 
-### v1.0.0
+### vnext
 
 - ft: overhaul module to be more pythonic [#38](https://github.com/whtsky/pixelmatch-py/pull/36)
 - ft: allow direct comparision of PIL.Image instances [#38](https://github.com/whtsky/pixelmatch-py/pull/36)
