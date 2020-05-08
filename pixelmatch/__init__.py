@@ -105,7 +105,9 @@ def pixelmatch(
     return diff
 
 
-def antialiased(img: ImageSequence, x1: int, y1: int, width: int, height: int, img2: ImageSequence):
+def antialiased(
+    img: ImageSequence, x1: int, y1: int, width: int, height: int, img2: ImageSequence
+):
     """
     check if a pixel is likely a part of anti-aliasing;
     based on "Anti-aliased Pixel and Intensity Slope Detector" paper by V. Vysniauskas, 2009
@@ -188,7 +190,9 @@ def has_many_siblings(img: ImageSequence, x1: int, y1: int, width: int, height: 
     return False
 
 
-def color_delta(img1: ImageSequence, img2: ImageSequence, k: int, m: int, y_only: bool = False):
+def color_delta(
+    img1: ImageSequence, img2: ImageSequence, k: int, m: int, y_only: bool = False
+):
     """
     calculate color difference according to the paper "Measuring perceived color difference
     using YIQ NTSC transmission color space in mobile applications" by Y. Kotsarenko and F. Ramos

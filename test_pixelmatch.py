@@ -57,7 +57,11 @@ testdata = [
     "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
 )
 def test_pixelmatch(
-    img_path_1: str, img_path_2: str, diff_path: str, options: Dict, expected_mismatch: int
+    img_path_1: str,
+    img_path_2: str,
+    diff_path: str,
+    options: Dict,
+    expected_mismatch: int,
 ):
 
     img1 = read_img(img_path_1)
