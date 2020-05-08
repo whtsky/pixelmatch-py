@@ -89,6 +89,7 @@ img_diff.save("diff.png")
 ### vnext
 
 - ft: overhaul module to be more pythonic [#38](https://github.com/whtsky/pixelmatch-py/pull/36)
+- docs: use absolute url for images in README 
 
 ### v0.1.1
 

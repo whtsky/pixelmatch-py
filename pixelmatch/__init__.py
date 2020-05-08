@@ -12,7 +12,7 @@ def pixelmatch(
     img2: ImageSequence,
     width: int,
     height: int,
-    output: MutableImageSequence = None,
+    output: Optional[MutableImageSequence] = None,
     threshold: float = 0.1,
     includeAA: bool = False,
     alpha: float = 0.1,
