@@ -3,8 +3,13 @@ from typing import Optional, List, Tuple
 
 from PIL.Image import Image
 
-from pixelmatch import pixelmatch as base_pixelmatch, ImageSequence, MutableImageSequence
+from pixelmatch import (
+    pixelmatch as base_pixelmatch,
+    ImageSequence,
+    MutableImageSequence,
+)
 from pixelmatch import RGBTuple
+
 
 def pixelmatch(
     img1: Image,
@@ -41,27 +46,29 @@ def pixelmatch(
     img1 = from_PIL_to_raw_data(img1)
     img2 = from_PIL_to_raw_data(img2)
 
-
     if output is not None:
         raw_output = from_PIL_to_raw_data(output)
     else:
         raw_output = None
 
     diff_pixels = base_pixelmatch(
-        img1, img2, width, height, raw_output,
+        img1,
+        img2,
+        width,
+        height,
+        raw_output,
         threshold=threshold,
         includeAA=includeAA,
         alpha=alpha,
         aa_color=aa_color,
         diff_color=diff_color,
-        diff_mask=diff_mask
+        diff_mask=diff_mask,
     )
 
     if raw_output is not None and output is not None:
         output.putdata(to_PIL_from_raw_data(raw_output))
 
     return diff_pixels
-
 
 
 def from_PIL_to_raw_data(pil_img: Image) -> MutableImageSequence:
@@ -75,7 +82,9 @@ def from_PIL_to_raw_data(pil_img: Image) -> MutableImageSequence:
     return [item for sublist in pil_img.convert("RGBA").getdata() for item in sublist]
 
 
-def to_PIL_from_raw_data(raw_data: ImageSequence) -> List[Tuple[float, float, float, float]]:
+def to_PIL_from_raw_data(
+    raw_data: ImageSequence,
+) -> List[Tuple[float, float, float, float]]:
     """
     Converts from the internal raw data format of [R1, G1, B1, A1, R2, ...] to PIL's raw data format, ie
     [(R1, B1, A1, A1), (R2, ...), ...]

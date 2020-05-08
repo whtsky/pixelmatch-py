@@ -1,6 +1,6 @@
 # pixelmatch-py
 
-Python port of https://github.com/mapbox/pixelmatch.
+Python port of https://github.com/mapbox/pixelmatch with additional support of PIL.Image instances.
 
 A fast pixel-level image comparison library, originally created to compare screenshots in tests.
 
@@ -87,11 +87,13 @@ mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 
 ## Changelog
 
+### vNEXT
+
+- ft: add function to compare PIL.Image instances through contrib.PIL.pixelmatch [#42](https://github.com/whtsky/pixelmatch-py/pull/42)
+
 ### v0.2.0
 
 - BREAKING CHANGE: remove `options` parameter [#38](https://github.com/whtsky/pixelmatch-py/pull/38)
-
-- ft: refactor code to be more pythonic
 - docs: use absolute url for images in README
 
 ### v0.1.1
