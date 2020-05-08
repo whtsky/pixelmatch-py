@@ -1,4 +1,4 @@
-from typing import Union, List, Tuple, MutableSequence, Sequence
+from typing import Union, List, Tuple, MutableSequence, Sequence, Optional
 
 # note: this shouldn't be necessary, but apparently is
 Number = Union[int, float]
@@ -12,7 +12,7 @@ def pixelmatch(
     img2: ImageSequence,
     width: int,
     height: int,
-    output: MutableImageSequence = None,
+    output: Optional[MutableImageSequence] = None,
     threshold: float = 0.1,
     includeAA: bool = False,
     alpha: float = 0.1,
