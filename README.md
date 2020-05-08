@@ -40,39 +40,40 @@ python -m pip install pixelmatch
 
 Compares two images, writes the output diff and returns the number of mismatched pixels.
 
+### contrib.PIL.pixelmatch
+
+Compares two images, writes the output diff and returns the number of mismatched pixels. Exact same API as `pixelmatch.pixelmatch` except for the important fact that it takes instances of PIL.Image for image parameters (`img1`, `img2`, and `output`) and the width/size need not be specified.
+
 ## Example usage
 
-### PIL
-
+### PIL.Image comparison
 ```python
 from PIL import Image
 
-from pixelmatch import pixelmatch
-
-
-def pil_to_flatten_data(img):
-    """
-    Convert data from [(R1, G1, B1, A1), (R2, G2, B2, A2)] to [R1, G1, B1, A1, R2, G2, B2, A2]
-    """
-    return [x for p in img.convert("RGBA").getdata() for x in p]
+from pixelmatch.contrib.PIL import pixelmatch
 
 img_a = Image.open("a.png")
 img_b = Image.open("b.png")
-width, height = img_a.size
-
-data_a = pil_to_flatten_data(img_a)
-data_b = pil_to_flatten_data(img_b)
-data_diff = [0] * len(data_a)
-
-mismatch = pixelmatch(data_a, data_b, width, height, data_diff, includeAA=True)
-
 img_diff = Image.new("RGBA", img_a.size)
 
-def flatten_data_to_pil(data):
-    return list(zip(data[::4], data[1::4], data[2::4], data[3::4]))
+# note how there is no need to specify dimensions
+mismatch = pixelmatch(img_a, img_b, img_diff, includeAA=True)
 
-img_diff.putdata(flatten_data_to_pil(data_diff))
 img_diff.save("diff.png")
+```
+
+
+### Raw Image Data Comparison
+```python
+from pixelmatch import pixelmatch
+
+width, height = 1920, 1080
+img_a = [R1, G1, B1, A1, R2, B2, G2, A2, ...]
+img_b = [R1, G1, B1, A1, R2, B2, G2, A2, ...]
+
+data_diff = [0] * len(img_a)
+
+mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 ```
 
 ## Example output
