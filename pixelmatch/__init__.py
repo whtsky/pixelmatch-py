@@ -261,7 +261,9 @@ def draw_pixel(output: MutableImageSequence, pos: int, r: float, g: float, b: fl
     output[pos + 3] = 255
 
 
-def draw_gray_pixel(img: ImageSequence, i: int, alpha: float, output: MutableImageSequence):
+def draw_gray_pixel(
+    img: ImageSequence, i: int, alpha: float, output: MutableImageSequence
+):
     r = img[i + 0]
     g = img[i + 1]
     b = img[i + 2]
