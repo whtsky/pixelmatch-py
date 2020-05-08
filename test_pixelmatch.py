@@ -1,5 +1,6 @@
 import itertools
 from pathlib import Path
+from typing import Dict
 
 import pytest
 from PIL import Image
@@ -56,7 +57,7 @@ testdata = [
     "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
 )
 def test_pixelmatch(
-    img_path_1: str, img_path_2: str, diff_path: str, options, expected_mismatch: int
+    img_path_1: str, img_path_2: str, diff_path: str, options: Dict, expected_mismatch: int
 ):
 
     img1 = read_img(img_path_1)
@@ -71,41 +72,5 @@ def test_pixelmatch(
 
     expected_diff = read_img(diff_path)
     assert diff_data == pil_to_flatten_data(expected_diff), "diff image"
-    assert mismatch == expected_mismatch, "number of mismatched pixels"
-    assert mismatch == mismatch2, "number of mismatched pixels without diff"
-
-
-@pytest.mark.parametrize(
-    "img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify_size",
-    itertools.product([True, False], repeat=4),
-)
-def test_works_with_PIL_Image(img_a_is_PIL, img_b_is_PIL, output_is_PIL, specify_size):
-    img_a_path, img_b_path, diff1_path, options, expected_mismatch = testdata[0]
-
-    img_a_data = read_img(img_a_path)
-    img_sizes = img_a_data.size
-    if not img_a_is_PIL:
-        img_a_data = pil_to_flatten_data(img_a_data)
-
-    img_b_data = read_img(img_b_path)
-    if not img_b_is_PIL:
-        img_b_data = pil_to_flatten_data(img_b_data)
-
-    diff_data = Image.new("RGBA", img_sizes)
-    if not output_is_PIL:
-        diff_data = pil_to_flatten_data(diff_data)
-
-    if specify_size or (not img_a_is_PIL and not img_b_is_PIL):
-        options["width"], options["height"] = img_sizes
-
-    mismatch = pixelmatch(img_a_data, img_b_data, output=diff_data, **options)
-    mismatch2 = pixelmatch(img_a_data, img_b_data, **options)
-
-    expected_diff = pil_to_flatten_data(read_img(diff1_path))
-
-    if output_is_PIL:
-        diff_data = pil_to_flatten_data(diff_data)
-    assert diff_data == expected_diff, "diff image"
-
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"
