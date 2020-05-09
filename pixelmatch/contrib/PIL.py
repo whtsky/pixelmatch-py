@@ -1,7 +1,7 @@
 """Functions to facilitate direct comparison of PIL.Image instances"""
 from typing import Optional, List, Tuple
 
-from PIL.Image import Image # type: ignore
+from PIL.Image import Image
 
 from pixelmatch import (
     pixelmatch as base_pixelmatch,
