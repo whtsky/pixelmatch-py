@@ -1,14 +1,10 @@
 """Functions to facilitate direct comparison of PIL.Image instances"""
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
 from PIL.Image import Image
 
-from pixelmatch import (
-    pixelmatch as base_pixelmatch,
-    ImageSequence,
-    MutableImageSequence,
-)
-from pixelmatch import RGBTuple
+from pixelmatch import core
+from pixelmatch.types import ImageSequence, MutableImageSequence, RGBTuple
 
 
 def pixelmatch(
@@ -51,7 +47,7 @@ def pixelmatch(
     else:
         raw_output = None
 
-    diff_pixels = base_pixelmatch(
+    diff_pixels = core.pixelmatch(
         img1,
         img2,
         width,

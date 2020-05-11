@@ -1,8 +1,8 @@
 # pixelmatch-py
 
-Python port of https://github.com/mapbox/pixelmatch with additional support of PIL.Image instances.
-
 A fast pixel-level image comparison library, originally created to compare screenshots in tests.
+Now with additional support of PIL.Image instances
+Python port of https://github.com/mapbox/pixelmatch.
 
 Features accurate **anti-aliased pixels detection**
 and **perceptual color difference metrics**.
@@ -22,6 +22,39 @@ Implements ideas from the following papers:
 
 ```bash
 python -m pip install pixelmatch
+```
+
+## Example usage
+
+### PIL.Image comparison
+
+```python
+from PIL import Image
+
+from pixelmatch.contrib.PIL import pixelmatch
+
+img_a = Image.open("a.png")
+img_b = Image.open("b.png")
+img_diff = Image.new("RGBA", img_a.size)
+
+# note how there is no need to specify dimensions
+mismatch = pixelmatch(img_a, img_b, img_diff, includeAA=True)
+
+img_diff.save("diff.png")
+```
+
+### Raw Image Data Comparison
+
+```python
+from pixelmatch import pixelmatch
+
+width, height = 1920, 1080
+img_a = [R1, G1, B1, A1, R2, B2, G2, A2, ...]
+img_b = [R1, G1, B1, A1, R2, B2, G2, A2, ...]
+
+data_diff = [0] * len(img_a)
+
+mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 ```
 
 ## API
@@ -44,38 +77,6 @@ Compares two images, writes the output diff and returns the number of mismatched
 
 Compares two images, writes the output diff and returns the number of mismatched pixels. Exact same API as `pixelmatch.pixelmatch` except for the important fact that it takes instances of PIL.Image for image parameters (`img1`, `img2`, and `output`) and the width/size need not be specified.
 
-## Example usage
-
-### PIL.Image comparison
-```python
-from PIL import Image
-
-from pixelmatch.contrib.PIL import pixelmatch
-
-img_a = Image.open("a.png")
-img_b = Image.open("b.png")
-img_diff = Image.new("RGBA", img_a.size)
-
-# note how there is no need to specify dimensions
-mismatch = pixelmatch(img_a, img_b, img_diff, includeAA=True)
-
-img_diff.save("diff.png")
-```
-
-
-### Raw Image Data Comparison
-```python
-from pixelmatch import pixelmatch
-
-width, height = 1920, 1080
-img_a = [R1, G1, B1, A1, R2, B2, G2, A2, ...]
-img_b = [R1, G1, B1, A1, R2, B2, G2, A2, ...]
-
-data_diff = [0] * len(img_a)
-
-mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
-```
-
 ## Example output
 
 | expected                                                                                                                                  | actual                                                                                                                                    | diff                                                                            |
@@ -87,9 +88,9 @@ mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 
 ## Changelog
 
-### vNEXT
+### v0.2.1
 
-- ft: add function to compare PIL.Image instances through contrib.PIL.pixelmatch [#42](https://github.com/whtsky/pixelmatch-py/pull/42)
+- feat: add function to compare PIL.Image instances through contrib.PIL.pixelmatch [#42](https://github.com/whtsky/pixelmatch-py/pull/42)
 
 ### v0.2.0
 
