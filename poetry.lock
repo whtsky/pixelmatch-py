@@ -79,10 +79,10 @@ description = "Hosted coverage reports for GitHub, Bitbucket and Gitlab"
 name = "codecov"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.1.6"
+version = "2.1.7"
 
 [package.dependencies]
-coverage = "4.5.4"
+coverage = "*"
 requests = ">=2.7.9"
 
 [[package]]
@@ -383,7 +383,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "54a4aaa9758b40141a99b678bfa4c547ebc5e78b2079e4f4d9d0b601e1dcbc9f"
+content-hash = "a03ba4898899d36738c43bb829e7b78c9ccae84dea7e51eddff0e8dbd916064f"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -416,9 +416,9 @@ click = [
     {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
 ]
 codecov = [
-    {file = "codecov-2.1.6-py2.py3-none-any.whl", hash = "sha256:770efd88c8e2aed346a1bc1a4ead8a055593278b1039c589273dda247d03c9dd"},
-    {file = "codecov-2.1.6-py3.8.egg", hash = "sha256:d1e44c6563014ad17235c74d9be3ecce053a7bebcea919ee5909265a71bb26e3"},
-    {file = "codecov-2.1.6.tar.gz", hash = "sha256:5bf4e752844566087c287cb7c43522210c28ac5db089005966109f58cbcbe135"},
+    {file = "codecov-2.1.7-py2.py3-none-any.whl", hash = "sha256:b67bb8029e8340a7bf22c71cbece5bd18c96261fdebc2f105ee4d5a005bc8728"},
+    {file = "codecov-2.1.7-py3.8.egg", hash = "sha256:d8b8109f44edad03b24f5f189dac8de9b1e3dc3c791fa37eeaf8c7381503ec34"},
+    {file = "codecov-2.1.7.tar.gz", hash = "sha256:491938ad774ea94a963d5d16354c7299e90422a33a353ba0d38d0943ed1d5091"},
 ]
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},
