@@ -62,6 +62,7 @@ def test_pixelmatch(
     diff_path: str,
     options: Dict,
     expected_mismatch: int,
+    benchmark,
 ):
 
     img1 = read_img(img_path_1)
@@ -71,7 +72,9 @@ def test_pixelmatch(
     img2_data = pil_to_flatten_data(img2)
     diff_data = [0.0] * len(img1_data)
 
-    mismatch = pixelmatch(img1_data, img2_data, width, height, diff_data, **options)
+    mismatch = benchmark(
+        pixelmatch, img1_data, img2_data, width, height, diff_data, **options
+    )
     mismatch2 = pixelmatch(img1_data, img2_data, width, height, None, **options)
 
     expected_diff = read_img(diff_path)
@@ -89,12 +92,13 @@ def test_PIL_pixelmatch(
     diff_path: str,
     options: Dict,
     expected_mismatch: int,
+    benchmark,
 ):
     img1 = read_img(img_path_1)
     img2 = read_img(img_path_2)
     diff_data = Image.new("RGBA", img1.size)
 
-    mismatch = PIL.pixelmatch(img1, img2, diff_data, **options)
+    mismatch = benchmark(PIL.pixelmatch, img1, img2, diff_data, **options)
     mismatch2 = PIL.pixelmatch(img1, img2, **options)
 
     assert pil_to_flatten_data(diff_data) == pil_to_flatten_data(
