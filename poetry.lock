@@ -9,7 +9,7 @@ version = "1.4.4"
 [[package]]
 category = "dev"
 description = "Atomic file writes."
-marker = "python_version >= \"3.5\" and sys_platform == \"win32\" or sys_platform == \"win32\""
+marker = "sys_platform == \"win32\""
 name = "atomicwrites"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -88,7 +88,7 @@ requests = ">=2.7.9"
 [[package]]
 category = "dev"
 description = "Cross-platform colored terminal text."
-marker = "python_version >= \"3.5\" and sys_platform == \"win32\" or sys_platform == \"win32\""
+marker = "sys_platform == \"win32\""
 name = "colorama"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
@@ -124,7 +124,7 @@ version = "2.10"
 [[package]]
 category = "dev"
 description = "Read metadata from Python packages"
-marker = "python_version >= \"3.5\" and python_version < \"3.8\" or python_version < \"3.8\""
+marker = "python_version < \"3.8\""
 name = "importlib-metadata"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
@@ -309,23 +309,20 @@ category = "dev"
 description = "Mypy static type checker plugin for Pytest"
 name = "pytest-mypy"
 optional = false
-python-versions = "~=3.4"
-version = "0.6.2"
+python-versions = ">=3.5"
+version = "0.7.0"
 
 [package.dependencies]
 filelock = ">=3.0"
+pytest = ">=3.5"
 
 [[package.dependencies.mypy]]
-python = ">=3.5,<3.8"
+python = "<3.8"
 version = ">=0.500"
 
 [[package.dependencies.mypy]]
 python = ">=3.8"
 version = ">=0.700"
-
-[package.dependencies.pytest]
-python = ">=3.5"
-version = ">=3.5"
 
 [[package]]
 category = "dev"
@@ -412,7 +409,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "08b680f1df60c33441a43952feb193def3e43a16adf2568294e6c966866366ef"
+content-hash = "740b88dfc71275c79bd2b7d39859a9be62379d43d857ec7d9159d8424d7ff145"
 lock-version = "1.0"
 python-versions = "^3.6"
 
@@ -563,6 +560,8 @@ pillow = [
     {file = "Pillow-7.2.0-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:5e51ee2b8114def244384eda1c82b10e307ad9778dac5c83fb0943775a653cd8"},
     {file = "Pillow-7.2.0-cp38-cp38-win32.whl", hash = "sha256:725aa6cfc66ce2857d585f06e9519a1cc0ef6d13f186ff3447ab6dff0a09bc7f"},
     {file = "Pillow-7.2.0-cp38-cp38-win_amd64.whl", hash = "sha256:a060cf8aa332052df2158e5a119303965be92c3da6f2d93b6878f0ebca80b2f6"},
+    {file = "Pillow-7.2.0-pp36-pypy36_pp73-macosx_10_10_x86_64.whl", hash = "sha256:9c87ef410a58dd54b92424ffd7e28fd2ec65d2f7fc02b76f5e9b2067e355ebf6"},
+    {file = "Pillow-7.2.0-pp36-pypy36_pp73-manylinux2010_x86_64.whl", hash = "sha256:e901964262a56d9ea3c2693df68bc9860b8bdda2b04768821e4c44ae797de117"},
     {file = "Pillow-7.2.0-pp36-pypy36_pp73-win32.whl", hash = "sha256:25930fadde8019f374400f7986e8404c8b781ce519da27792cbe46eabec00c4d"},
     {file = "Pillow-7.2.0.tar.gz", hash = "sha256:97f9e7953a77d5a70f49b9a48da7776dc51e9b738151b22dacf101641594a626"},
 ]
@@ -594,8 +593,8 @@ pytest-cov = [
     {file = "pytest_cov-2.10.1-py2.py3-none-any.whl", hash = "sha256:45ec2d5182f89a81fc3eb29e3d1ed3113b9e9a873bcddb2a71faaab066110191"},
 ]
 pytest-mypy = [
-    {file = "pytest-mypy-0.6.2.tar.gz", hash = "sha256:2560a9b27d59bb17810d12ec3402dfc7c8e100e40539a70d2814bcbb27240f27"},
-    {file = "pytest_mypy-0.6.2-py3-none-any.whl", hash = "sha256:76e705cfd3800bf2b534738e792245ac5bb8d780698d0f8cd6c79032cc5e9923"},
+    {file = "pytest-mypy-0.7.0.tar.gz", hash = "sha256:5a667d9a2b66bf98b3a494411f221923a6e2c3eafbe771104951aaec8985673d"},
+    {file = "pytest_mypy-0.7.0-py3-none-any.whl", hash = "sha256:e0505ace48d2b19fe686366fce6b4a2ac0d090423736bb6aa2e39554d18974b7"},
 ]
 regex = [
     {file = "regex-2020.7.14-cp27-cp27m-win32.whl", hash = "sha256:e46d13f38cfcbb79bfdb2964b0fe12561fe633caf964a77a5f8d4e45fe5d2ef7"},
@@ -615,6 +614,7 @@ regex = [
     {file = "regex-2020.7.14-cp38-cp38-manylinux1_i686.whl", hash = "sha256:5ea81ea3dbd6767873c611687141ec7b06ed8bab43f68fad5b7be184a920dc99"},
     {file = "regex-2020.7.14-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:bbb332d45b32df41200380fff14712cb6093b61bd142272a10b16778c418e98e"},
     {file = "regex-2020.7.14-cp38-cp38-manylinux2010_i686.whl", hash = "sha256:c11d6033115dc4887c456565303f540c44197f4fc1a2bfb192224a301534888e"},
+    {file = "regex-2020.7.14-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:75aaa27aa521a182824d89e5ab0a1d16ca207318a6b65042b046053cfc8ed07a"},
     {file = "regex-2020.7.14-cp38-cp38-win32.whl", hash = "sha256:d6cff2276e502b86a25fd10c2a96973fdb45c7a977dca2138d661417f3728341"},
     {file = "regex-2020.7.14-cp38-cp38-win_amd64.whl", hash = "sha256:7a2dd66d2d4df34fa82c9dc85657c5e019b87932019947faece7983f2089a840"},
     {file = "regex-2020.7.14.tar.gz", hash = "sha256:3a3af27a8d23143c49a3420efe5b3f8cf1a48c6fc8bc6856b03f638abc1833bb"},
