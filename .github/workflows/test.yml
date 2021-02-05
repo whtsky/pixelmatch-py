@@ -2,6 +2,8 @@ name: Main workflow
 on: [push, pull_request]
 jobs:
   pip-install:
+    name: pip install
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
