@@ -88,6 +88,11 @@ Compares two images, writes the output diff and returns the number of mismatched
 
 ## Changelog
 
+### v0.2.2
+
+- typing: use `Sequence` instead of `List` for `RGBTuple`
+- build: switch to `poetry_core` [#81](https://github.com/whtsky/pixelmatch-py/pull/81)
+
 ### v0.2.1
 
 - feat: add function to compare PIL.Image instances through contrib.PIL.pixelmatch [#42](https://github.com/whtsky/pixelmatch-py/pull/42)
