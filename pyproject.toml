@@ -17,7 +17,7 @@ pytest-cov = "^2.11.1"
 pillow = "^7.2.0"
 codecov = "^2.1.11"
 pytest-benchmark = "^3.2.3"
-pytest-mypy = "^0.7.0"
+pytest-mypy = "^0.8.0"
 mypy = "^0.800"
 
 [build-system]

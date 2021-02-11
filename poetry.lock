@@ -288,17 +288,19 @@ testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "pytest-xdist",
 
 [[package]]
 name = "pytest-mypy"
-version = "0.7.0"
+version = "0.8.0"
 description = "Mypy static type checker plugin for Pytest"
 category = "dev"
 optional = false
 python-versions = ">=3.5"
 
 [package.dependencies]
+attrs = ">=19.0"
 filelock = ">=3.0"
 mypy = [
     {version = ">=0.500", markers = "python_version < \"3.8\""},
-    {version = ">=0.700", markers = "python_version >= \"3.8\""},
+    {version = ">=0.700", markers = "python_version >= \"3.8\" and python_version < \"3.9\""},
+    {version = ">=0.780", markers = "python_version >= \"3.9\""},
 ]
 pytest = ">=3.5"
 
@@ -380,7 +382,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "826aa50cb8beaf424fb8749d591f19911ed3b4bebbe9df9752cc1a31bfab2f55"
+content-hash = "93085f079abc23ce64da12e7fadbe464b4059b2e7e78bd2627fc06db55b2ddd1"
 
 [metadata.files]
 appdirs = [
@@ -581,8 +583,8 @@ pytest-cov = [
     {file = "pytest_cov-2.11.1-py2.py3-none-any.whl", hash = "sha256:bdb9fdb0b85a7cc825269a4c56b48ccaa5c7e365054b6038772c32ddcdc969da"},
 ]
 pytest-mypy = [
-    {file = "pytest-mypy-0.7.0.tar.gz", hash = "sha256:5a667d9a2b66bf98b3a494411f221923a6e2c3eafbe771104951aaec8985673d"},
-    {file = "pytest_mypy-0.7.0-py3-none-any.whl", hash = "sha256:e0505ace48d2b19fe686366fce6b4a2ac0d090423736bb6aa2e39554d18974b7"},
+    {file = "pytest-mypy-0.8.0.tar.gz", hash = "sha256:63d418a4fea7d598ac40b659723c00804d16a251d90a5cfbca213eeba5aaf01c"},
+    {file = "pytest_mypy-0.8.0-py3-none-any.whl", hash = "sha256:8d2112972c1debf087943f48963a0daf04f3424840aea0cf437cc97053b1b0ef"},
 ]
 regex = [
     {file = "regex-2020.11.13-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:8b882a78c320478b12ff024e81dc7d43c1462aa4a3341c754ee65d857a521f85"},
