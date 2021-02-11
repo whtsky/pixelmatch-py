@@ -13,7 +13,7 @@ python = "^3.6"
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
 pytest = "^6.2.2"
-pytest-cov = "^2.10.1"
+pytest-cov = "^2.11.1"
 pillow = "^7.2.0"
 codecov = "^2.1.11"
 pytest-benchmark = "^3.2.3"
