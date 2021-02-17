@@ -88,6 +88,10 @@ Compares two images, writes the output diff and returns the number of mismatched
 
 ## Changelog
 
+### v0.2.3
+
+- feat: make package comply with PEP-561
+
 ### v0.2.2
 
 - typing: use `Sequence` instead of `List` for `RGBTuple`
