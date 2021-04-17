@@ -20,7 +20,7 @@ pytest = "^6.2.3"
 pytest-cov = "^2.11.1"
 pillow = "^7.2.0"
 codecov = "^2.1.11"
-pytest-benchmark = "^3.2.3"
+pytest-benchmark = "^3.4.1"
 pytest-mypy = "^0.8.1"
 mypy = "^0.800"
 
