@@ -3,7 +3,7 @@ from .types import ImageSequence, MutableImageSequence
 
 def antialiased(
     img: ImageSequence, x1: int, y1: int, width: int, height: int, img2: ImageSequence
-):
+) -> bool:
     """
     check if a pixel is likely a part of anti-aliasing;
     based on "Anti-aliased Pixel and Intensity Slope Detector" paper by V. Vysniauskas, 2009
@@ -13,8 +13,9 @@ def antialiased(
     x2 = min(x1 + 1, width - 1)
     y2 = min(y1 + 1, height - 1)
     pos = (y1 * width + x1) * 4
-    zeroes = (x1 == x0 or x1 == x2 or y1 == y0 or y1 == y2) and 1 or 0
-    min_delta = max_delta = min_x = min_y = max_x = max_y = 0
+    zeroes = int(x1 == x0 or x1 == x2 or y1 == y0 or y1 == y2)
+    min_delta = max_delta = 0.0
+    min_x = min_y = max_x = max_y = 0
 
     # go through 8 adjacent pixels
     for x in range(x0, x2 + 1):
@@ -59,7 +60,9 @@ def antialiased(
     )
 
 
-def has_many_siblings(img: ImageSequence, x1: int, y1: int, width: int, height: int):
+def has_many_siblings(
+    img: ImageSequence, x1: int, y1: int, width: int, height: int
+) -> bool:
     """
     check if a pixel has 3+ adjacent pixels of the same color.
     """
@@ -68,7 +71,7 @@ def has_many_siblings(img: ImageSequence, x1: int, y1: int, width: int, height: 
     x2 = min(x1 + 1, width - 1)
     y2 = min(y1 + 1, height - 1)
     pos = (y1 * width + x1) * 4
-    zeroes = (x1 == x0 or x1 == x2 or y1 == y0 or y1 == y2) and 1 or 0
+    zeroes = int(x1 == x0 or x1 == x2 or y1 == y0 or y1 == y2)
 
     # go through 8 adjacent pixels
     for x in range(x0, x2 + 1):
@@ -88,7 +91,7 @@ def has_many_siblings(img: ImageSequence, x1: int, y1: int, width: int, height: 
 
 def color_delta(
     img1: ImageSequence, img2: ImageSequence, k: int, m: int, y_only: bool = False
-):
+) -> float:
     """
     calculate color difference according to the paper "Measuring perceived color difference
     using YIQ NTSC transmission color space in mobile applications" by Y. Kotsarenko and F. Ramos
@@ -97,7 +100,7 @@ def color_delta(
     r2, g2, b2, a2 = [img2[m + offset] for offset in range(4)]
 
     if a1 == a2 and r1 == r2 and g1 == g2 and b1 == b2:
-        return 0
+        return 0.0
 
     if a1 < 255:
         a1 /= 255
@@ -119,15 +122,15 @@ def color_delta(
     return 0.5053 * y * y + 0.299 * i * i + 0.1957 * q * q
 
 
-def rgb2y(r: float, g: float, b: float):
+def rgb2y(r: float, g: float, b: float) -> float:
     return r * 0.29889531 + g * 0.58662247 + b * 0.11448223
 
 
-def rgb2i(r: float, g: float, b: float):
+def rgb2i(r: float, g: float, b: float) -> float:
     return r * 0.59597799 - g * 0.27417610 - b * 0.32180189
 
 
-def rgb2q(r: float, g: float, b: float):
+def rgb2q(r: float, g: float, b: float) -> float:
     return r * 0.21147017 - g * 0.52261711 + b * 0.31114694
 
 
@@ -143,12 +146,14 @@ def blendRGB(r: float, g: float, b: float, a: float):
     return blend(r, a), blend(g, a), blend(b, a)
 
 
-def blend(c: float, a: float):
+def blend(c: float, a: float) -> float:
     """blend semi-transparent color with white"""
     return 255 + (c - 255) * a
 
 
-def draw_pixel(output: MutableImageSequence, pos: int, r: float, g: float, b: float):
+def draw_pixel(
+    output: MutableImageSequence, pos: int, r: float, g: float, b: float
+) -> None:
     output[pos + 0] = int(r)
     output[pos + 1] = int(g)
     output[pos + 2] = int(b)
@@ -157,7 +162,7 @@ def draw_pixel(output: MutableImageSequence, pos: int, r: float, g: float, b: fl
 
 def draw_gray_pixel(
     img: ImageSequence, i: int, alpha: float, output: MutableImageSequence
-):
+) -> None:
     r = img[i + 0]
     g = img[i + 1]
     b = img[i + 2]
