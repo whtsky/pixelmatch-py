@@ -88,6 +88,11 @@ Compares two images, writes the output diff and returns the number of mismatched
 
 ## Changelog
 
+### v0.2.4
+
+- type: fix typing issues
+- chore: test Python 3.10
+
 ### v0.2.3
 
 - feat: make package comply with PEP-561
