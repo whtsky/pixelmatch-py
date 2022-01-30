@@ -329,7 +329,7 @@ testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtuale
 
 [[package]]
 name = "pytest-mypy"
-version = "0.8.1"
+version = "0.9.0"
 description = "Mypy static type checker plugin for Pytest"
 category = "dev"
 optional = false
@@ -343,7 +343,10 @@ mypy = [
     {version = ">=0.700", markers = "python_version >= \"3.8\" and python_version < \"3.9\""},
     {version = ">=0.780", markers = "python_version >= \"3.9\""},
 ]
-pytest = ">=3.5"
+pytest = [
+    {version = ">=6.2", markers = "python_version >= \"3.10\""},
+    {version = ">=4.6", markers = "python_version >= \"3.5\" and python_version < \"3.10\""},
+]
 
 [[package]]
 name = "requests"
@@ -423,7 +426,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.2"
-content-hash = "2288cdb723f14430560682f1d4f613995daaad7c945a1af25b4831a916461854"
+content-hash = "5f3b8d24f4779239f152809e115b2297b459a969655b73c47fc5530c1144c34b"
 
 [metadata.files]
 atomicwrites = [
@@ -624,8 +627,8 @@ pytest-cov = [
     {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
 ]
 pytest-mypy = [
-    {file = "pytest-mypy-0.8.1.tar.gz", hash = "sha256:1fa55723a4bf1d054fcba1c3bd694215a2a65cc95ab10164f5808afd893f3b11"},
-    {file = "pytest_mypy-0.8.1-py3-none-any.whl", hash = "sha256:6e68e8eb7ceeb7d1c83a1590912f784879f037b51adfb9c17b95c6b2fc57466b"},
+    {file = "pytest-mypy-0.9.0.tar.gz", hash = "sha256:4f2a08d4ff34737eb6ad6402df1e424f43c9213181b32d675e4e3cafbda67bbd"},
+    {file = "pytest_mypy-0.9.0-py3-none-any.whl", hash = "sha256:f8b5c6be405c8605959d1c79f20dcdeb2b3667fce8f264ff32bc854e5249f161"},
 ]
 requests = [
     {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},
