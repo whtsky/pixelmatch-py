@@ -45,6 +45,7 @@ testdata = [
         12437,
     ],
     ["3a", "3b", "3diff", OPTIONS, 212],
+    ["3a", "3b", "3diff", {"fail_fast": True, "threshold": 0.05}, 1],
     ["4a", "4b", "4diff", OPTIONS, 36049],
     ["5a", "5b", "5diff", OPTIONS, 0],
     ["6a", "6b", "6diff", OPTIONS, 51],

@@ -17,6 +17,7 @@ def pixelmatch(
     aa_color: RGBTuple = (255, 255, 0),
     diff_color: RGBTuple = (255, 0, 0),
     diff_mask: bool = False,
+    fail_fast: bool = False,
 ) -> int:
     """
     Compares two images, writes the output diff and returns the number of mismatched pixels.
@@ -36,7 +37,8 @@ def pixelmatch(
         defaults to (255, 0, 0) (red)
     :param diff_mask: whether or not to draw the diff over a transparent background (a mask),
         defaults to False
-    :return: number of pixels that are different
+    :param fail_fast: if true, will return after first different pixel. Defaults to false
+    :return: number of pixels that are different or 1 if fail_fast == true
     """
     width, height = img1.size
     img1 = from_PIL_to_raw_data(img1)
@@ -59,6 +61,7 @@ def pixelmatch(
         aa_color=aa_color,
         diff_color=diff_color,
         diff_mask=diff_mask,
+        fail_fast=fail_fast,
     )
 
     if raw_output is not None and output is not None:

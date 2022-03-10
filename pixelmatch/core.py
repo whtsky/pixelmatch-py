@@ -16,6 +16,7 @@ def pixelmatch(
     aa_color: RGBTuple = (255, 255, 0),
     diff_color: RGBTuple = (255, 0, 0),
     diff_mask: bool = False,
+    fail_fast: bool = False,
 ) -> int:
     """
     Compares two images, writes the output diff and returns the number of mismatched pixels.
@@ -37,7 +38,8 @@ def pixelmatch(
         defaults to (255, 0, 0) (red)
     :param diff_mask: whether or not to draw the diff over a transparent background (a mask),
         defaults to False
-    :return: number of pixels that are different
+    :param fail_fast: if true, will return after first different pixel. Defaults to false
+    :return: number of pixels that are different or 1 if fail_fast == true
     """
 
     if len(img1) != len(img2):
@@ -93,6 +95,8 @@ def pixelmatch(
                     # found substantial difference not caused by anti-aliasing; draw it as red
                     if output:
                         draw_pixel(output, pos, diffR, diffG, diffB)
+                    if fail_fast:
+                        return 1
                     diff += 1
 
             elif output:
