@@ -45,7 +45,6 @@ testdata = [
         12437,
     ],
     ["3a", "3b", "3diff", OPTIONS, 212],
-    ["3a", "3b", "3diff", {"fail_fast": True, "threshold": 0.05}, 1],
     ["4a", "4b", "4diff", OPTIONS, 36049],
     ["5a", "5b", "5diff", OPTIONS, 0],
     ["6a", "6b", "6diff", OPTIONS, 51],
@@ -83,6 +82,25 @@ def test_pixelmatch(
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"
 
+
+@pytest.mark.parametrize(
+    "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
+)
+def test_pixelmatch_failfast(
+    img_path_1: str,
+    img_path_2: str,
+    diff_path: str,
+    options: Dict,
+    expected_mismatch: int,
+    benchmark,
+):
+    img1 = read_img(img_path_1)
+    img2 = read_img(img_path_2)
+    width, height = img1.size
+    img1_data = pil_to_flatten_data(img1)
+    img2_data = pil_to_flatten_data(img2)
+    if expected_mismatch:
+        assert benchmark(pixelmatch, img1_data, img2_data, width, height, fail_fast=True, **options) == 1
 
 @pytest.mark.parametrize(
     "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
