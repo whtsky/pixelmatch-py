@@ -86,6 +86,25 @@ def test_pixelmatch(
 @pytest.mark.parametrize(
     "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
 )
+def test_pixelmatch_failfast(
+    img_path_1: str,
+    img_path_2: str,
+    diff_path: str,
+    options: Dict,
+    expected_mismatch: int,
+    benchmark,
+):
+    img1 = read_img(img_path_1)
+    img2 = read_img(img_path_2)
+    width, height = img1.size
+    img1_data = pil_to_flatten_data(img1)
+    img2_data = pil_to_flatten_data(img2)
+    if expected_mismatch:
+        assert benchmark(pixelmatch, img1_data, img2_data, width, height, fail_fast=True, **options) == 1
+
+@pytest.mark.parametrize(
+    "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
+)
 def test_PIL_pixelmatch(
     img_path_1: str,
     img_path_2: str,
