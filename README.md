@@ -59,7 +59,7 @@ mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 
 ## API
 
-### pixelmatch(img1, img2, width, height, output, threshold, includeAA, alpha, aa_color, diff_color, diff_mask)
+### pixelmatch(img1, img2, width, height, output, threshold, includeAA, alpha, aa_color, diff_color, diff_mask, fail_fast)
 
 - `img1`, `img2` — RGBA Image data of the images to compare. **Note:** image dimensions must be equal.
 - `width`, `height` — Width and height of the images.
@@ -70,6 +70,7 @@ mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 - `aa_color` — The color of anti-aliased pixels in the diff output in `[R, G, B]` format. `[255, 255, 0]` by default.
 - `diff_color` — The color of differing pixels in the diff output in `[R, G, B]` format. `[255, 0, 0]` by default.
 - `diff_mask` — Draw the diff over a transparent background (a mask), rather than over the original image. Will not draw anti-aliased pixels (if detected).
+- `fail_fast` - If true, will return after first different pixel.
 
 Compares two images, writes the output diff and returns the number of mismatched pixels.
 
@@ -88,8 +89,10 @@ Compares two images, writes the output diff and returns the number of mismatched
 
 ## Changelog
 
-### v0.2.4
+### v0.3.0
 
+- feat: add fail_fast option [#144](https://github.com/whtsky/pixelmatch-py/pull/144)
+### v0.2.4
 - type: fix typing issues
 - chore: test Python 3.10
 
