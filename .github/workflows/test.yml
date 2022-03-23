@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -70,7 +70,7 @@ jobs:
       - run: poetry install
       - run: poetry run pytest --benchmark-json output.json
       - name: Download previous benchmark data
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./cache
           key: ${{ runner.os }}-benchmark
