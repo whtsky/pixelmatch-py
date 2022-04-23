@@ -16,7 +16,7 @@ python = "^3.7"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
-pytest = "^7.1.1"
+pytest = "^7.1.2"
 pytest-cov = "^3.0.0"
 pillow = "^7.2.0"
 codecov = "^2.1.12"
