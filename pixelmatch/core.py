@@ -1,7 +1,14 @@
 from typing import Optional
 
 from .types import ImageSequence, MutableImageSequence, RGBTuple
-from .utils import antialiased, color_delta, draw_gray_pixel, draw_pixel
+from .utils import (
+    antialiased,
+    color_delta,
+    color_delta,
+    draw_gray_pixel,
+    draw_pixel,
+    get_pixel,
+)
 
 
 def pixelmatch(
@@ -73,12 +80,13 @@ def pixelmatch(
     diffR, diffG, diffB = diff_color
 
     # compare each pixel of one image against the other one
+    pos = -4
     for y in range(height):
         for x in range(width):
-            pos = (y * width + x) * 4
+            pos += 4
 
             # squared YUV distance between colors at this pixel position
-            delta = color_delta(img1, img2, pos, pos)
+            delta = color_delta(get_pixel(img1, pos), get_pixel(img2, pos))
 
             # the color difference is above the threshold
             if delta > maxDelta:
