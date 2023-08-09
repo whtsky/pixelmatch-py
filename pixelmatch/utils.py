@@ -1,4 +1,4 @@
-from .types import ImageSequence, MutableImageSequence
+from .types import ImageSequence, MutableImageSequence, Pixel
 
 
 def antialiased(
@@ -8,14 +8,18 @@ def antialiased(
     check if a pixel is likely a part of anti-aliasing;
     based on "Anti-aliased Pixel and Intensity Slope Detector" paper by V. Vysniauskas, 2009
     """
-    x0 = max(x1 - 1, 0)
-    y0 = max(y1 - 1, 0)
-    x2 = min(x1 + 1, width - 1)
-    y2 = min(y1 + 1, height - 1)
-    pos = (y1 * width + x1) * 4
+
+    # This is faster than using min and max
+    x0 = 0 if x1 == 0 else x1 - 1
+    y0 = 0 if y1 == 0 else y1 - 1
+    x2 = x1 if x1 == width - 1 else x1 + 1
+    y2 = y1 if y1 == height - 1 else y1 + 1
+
     zeroes = int(x1 == x0 or x1 == x2 or y1 == y0 or y1 == y2)
     min_delta = max_delta = 0.0
     min_x = min_y = max_x = max_y = 0
+
+    center = get_pixel(img, (y1 * width + x1) * 4)
 
     # go through 8 adjacent pixels
     for x in range(x0, x2 + 1):
@@ -23,8 +27,9 @@ def antialiased(
             if x == x1 and y == y1:
                 continue
 
+            neighbor = get_pixel(img, (y * width + x) * 4)
             # brightness delta between the center pixel and adjacent one
-            delta = color_delta(img, img, pos, (y * width + x) * 4, True)
+            delta = color_delta(center, neighbor, True)
 
             # count the number of equal, darker and brighter adjacent pixels
             if delta == 0:
@@ -66,11 +71,15 @@ def has_many_siblings(
     """
     check if a pixel has 3+ adjacent pixels of the same color.
     """
-    x0 = max(x1 - 1, 0)
-    y0 = max(y1 - 1, 0)
-    x2 = min(x1 + 1, width - 1)
-    y2 = min(y1 + 1, height - 1)
-    pos = (y1 * width + x1) * 4
+
+    # This is faster than using min and max
+    x0 = (0 if x1 == 0 else x1 -1)
+    y0 = (0 if y1 == 0 else y1 -1)
+    x2 = (x1 if x1 == width - 1 else x1 + 1)
+    y2 = (y1 if y1 == height - 1 else y1 + 1)
+
+    center = get_pixel(img, (y1 * width + x1) * 4)
+
     zeroes = int(x1 == x0 or x1 == x2 or y1 == y0 or y1 == y2)
 
     # go through 8 adjacent pixels
@@ -79,28 +88,24 @@ def has_many_siblings(
             if x == x1 and y == y1:
                 continue
 
-            pos2 = (y * width + x) * 4
-            if all(img[pos + offset] == img[pos2 + offset] for offset in range(4)):
+            if center == get_pixel(img, (y * width + x) * 4):
                 zeroes += 1
-
-            if zeroes > 2:
-                return True
+                if zeroes > 2:
+                    return True
 
     return False
 
 
-def color_delta(
-    img1: ImageSequence, img2: ImageSequence, k: int, m: int, y_only: bool = False
-) -> float:
+def color_delta(p1: Pixel, p2: Pixel, y_only: bool = False) -> float:
     """
     calculate color difference according to the paper "Measuring perceived color difference
     using YIQ NTSC transmission color space in mobile applications" by Y. Kotsarenko and F. Ramos
     """
-    r1, g1, b1, a1 = [img1[k + offset] for offset in range(4)]
-    r2, g2, b2, a2 = [img2[m + offset] for offset in range(4)]
-
-    if a1 == a2 and r1 == r2 and g1 == g2 and b1 == b2:
+    if p1 == p2:
         return 0.0
+
+    r1, g1, b1, a1 = p1
+    r2, g2, b2, a2 = p2
 
     if a1 < 255:
         a1 /= 255
@@ -168,3 +173,7 @@ def draw_gray_pixel(
     b = img[i + 2]
     val = blend(rgb2y(r, g, b), alpha * img[i + 3] / 255)
     draw_pixel(output, i, val, val, val)
+
+
+def get_pixel(img: ImageSequence, i: int) -> Pixel:
+    return (img[i + 0], img[i + 1], img[i + 2], img[i + 3])
