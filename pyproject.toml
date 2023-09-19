@@ -12,7 +12,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.7.17"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
