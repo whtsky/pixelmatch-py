@@ -22,7 +22,7 @@ pillow = "^7.2.0"
 codecov = "^2.1.12"
 pytest-benchmark = "^3.4.1"
 pytest-mypy = "^0.10.3"
-mypy = "^0.931"
+mypy = "^1.19.1"
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
