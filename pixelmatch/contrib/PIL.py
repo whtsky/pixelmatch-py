@@ -2,6 +2,7 @@
 
 from typing import List, Optional, Tuple
 
+import PIL.Image
 from PIL.Image import Image
 
 from pixelmatch import core
@@ -26,9 +27,9 @@ def pixelmatch(
     of raw image data.
 
     :param img1: PIL.Image data to compare with img2. Must be the same size as img2
-    :param img2: PIL.Image data to compare with img2. Must be the same size as img1
-    :param output: Image data to write the diff to. Should be the same size as
-    :param threshold: matching threshold (0 to 1); smaller is more sensitive, defaults to 1
+    :param img2: PIL.Image data to compare with img1. Must be the same size as img1
+    :param output: RGBA Image to write the diff to. Must be the same size as img1
+    :param threshold: matching threshold (0 to 1); smaller is more sensitive, defaults to 0.1
     :param includeAA: whether or not to skip anti-aliasing detection, ie if includeAA is True,
         detecting and ignoring anti-aliased pixels is disabled. Defaults to False
     :param alpha: opacity of original image in diff output, defaults to 0.1
@@ -42,20 +43,29 @@ def pixelmatch(
     :return: number of pixels that are different or 1 if fail_fast == true
     """
     width, height = img1.size
-    raw_img1 = from_PIL_to_raw_data(img1)
-    raw_img2 = from_PIL_to_raw_data(img2)
+    img1_rgba = img1.convert("RGBA")
+    img2_rgba = img2.convert("RGBA")
+    img1_bytes = img1_rgba.tobytes()
+    img2_bytes = img2_rgba.tobytes()
 
-    if output is not None:
-        raw_output: Optional[MutableImageSequence] = from_PIL_to_raw_data(output)
-    else:
-        raw_output = None
+    # Fast path: byte-identical images have no diff
+    if img1_bytes == img2_bytes:
+        if output is not None and not diff_mask:
+            _draw_grayscale(img1_rgba, alpha, output)
+        return 0
+
+    # core.pixelmatch doesn't read output_data, so initialize with zeros;
+    # img1 should be the same size as output (and will error in .frombytes otherwise)
+    output_data = bytearray(len(img1_bytes)) if output is not None else None
 
     diff_pixels = core.pixelmatch(
-        raw_img1,
-        raw_img2,
+        list(img1_bytes),
+        list(img2_bytes),
         width,
         height,
-        raw_output,
+        # bytearray is MutableSequence[int], not MutableSequence[int | float];
+        # safe because draw_pixel() only ever writes int values
+        output_data,  # type: ignore[arg-type]
         threshold=threshold,
         includeAA=includeAA,
         alpha=alpha,
@@ -65,10 +75,21 @@ def pixelmatch(
         fail_fast=fail_fast,
     )
 
-    if raw_output is not None and output is not None:
-        output.putdata(to_PIL_from_raw_data(raw_output))
+    if output_data is not None and output is not None:
+        output.frombytes(bytes(output_data), "raw", "RGBA")
 
     return diff_pixels
+
+
+def _draw_grayscale(img_rgba: Image, alpha: float, output: Image) -> None:
+    """Draw a grayscale version of img_rgba blended with white into output."""
+    luminance = img_rgba.convert("L")
+    # Opaque pixels get weight `alpha`, transparent pixels get 0.
+    blend_weight = img_rgba.getchannel("A").point(lambda x: int(x * alpha))
+    white = PIL.Image.new("L", img_rgba.size, 255)
+    # Where mask is high, show luminance; where low, show white.
+    blended = PIL.Image.composite(image1=luminance, image2=white, mask=blend_weight)
+    output.paste(PIL.Image.merge("RGBA", (blended, blended, blended, white)))
 
 
 def from_PIL_to_raw_data(pil_img: Image) -> MutableImageSequence:
