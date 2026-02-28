@@ -1,4 +1,5 @@
 """Functions to facilitate direct comparison of PIL.Image instances"""
+
 from typing import List, Optional, Tuple
 
 from PIL.Image import Image
@@ -41,8 +42,8 @@ def pixelmatch(
     :return: number of pixels that are different or 1 if fail_fast == true
     """
     width, height = img1.size
-    img1 = from_PIL_to_raw_data(img1)
-    img2 = from_PIL_to_raw_data(img2)
+    raw_img1 = from_PIL_to_raw_data(img1)
+    raw_img2 = from_PIL_to_raw_data(img2)
 
     if output is not None:
         raw_output: Optional[MutableImageSequence] = from_PIL_to_raw_data(output)
@@ -50,8 +51,8 @@ def pixelmatch(
         raw_output = None
 
     diff_pixels = core.pixelmatch(
-        img1,
-        img2,
+        raw_img1,
+        raw_img2,
         width,
         height,
         raw_output,
@@ -78,7 +79,12 @@ def from_PIL_to_raw_data(pil_img: Image) -> MutableImageSequence:
     :param pil_img:
     :return:
     """
-    return [item for sublist in pil_img.convert("RGBA").getdata() for item in sublist]
+    # getdata() returns ImagingCore which is iterable at runtime
+    return [
+        item
+        for sublist in pil_img.convert("RGBA").getdata()  # type: ignore[attr-defined]
+        for item in sublist
+    ]
 
 
 def to_PIL_from_raw_data(
