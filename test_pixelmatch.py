@@ -19,7 +19,7 @@ def pil_to_flatten_data(img):
     """
     Convert data from [(R1, G1, B1, A1), (R2, G2, B2, A2)] to [R1, G1, B1, A1, R2, G2, B2, A2]
     """
-    return [x for p in img.convert("RGBA").getdata() for x in p]
+    return list(img.convert("RGBA").tobytes())
 
 
 testdata = [

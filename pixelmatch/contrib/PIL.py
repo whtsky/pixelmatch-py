@@ -79,12 +79,7 @@ def from_PIL_to_raw_data(pil_img: Image) -> MutableImageSequence:
     :param pil_img:
     :return:
     """
-    # getdata() returns ImagingCore which is iterable at runtime
-    return [
-        item
-        for sublist in pil_img.convert("RGBA").getdata()  # type: ignore[attr-defined]
-        for item in sublist
-    ]
+    return list(pil_img.convert("RGBA").tobytes())
 
 
 def to_PIL_from_raw_data(
