@@ -9,7 +9,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.14.3"
       - run: python -m pip install -U pip
       - run: pip install .
   twine-check:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.14.3"
       - run: pip install poetry twine
       - run: poetry install
       - run: poetry build
@@ -33,7 +33,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.14.3"
       - run: pip install poetry
       - run: poetry install
       - run: poetry run black --check .
@@ -65,7 +65,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.14.3"
       - run: pip install poetry
       - run: poetry install
       - run: poetry run pytest --benchmark-json output.json
