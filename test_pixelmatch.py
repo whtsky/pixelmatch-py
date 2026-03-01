@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 from typing import Dict
 
@@ -204,3 +205,15 @@ def test_PIL_pixelmatch_identical_transparent_images_output_matches_core(
     actual_output = pil_to_flatten_data(pil_output)
     expected_output = pil_to_flatten_data(read_img(fixture))
     assert actual_output == pytest.approx(expected_output, abs=1)
+
+
+def test_from_PIL_to_raw_data_deprecated():
+    img = Image.new("RGBA", (2, 2), (10, 20, 30, 255))
+    with pytest.warns(DeprecationWarning, match="from_PIL_to_raw_data.*deprecated"):
+        PIL.from_PIL_to_raw_data(img)
+
+
+def test_to_PIL_from_raw_data_deprecated():
+    raw = [10, 20, 30, 255] * 4
+    with pytest.warns(DeprecationWarning, match="to_PIL_from_raw_data.*deprecated"):
+        PIL.to_PIL_from_raw_data(raw)

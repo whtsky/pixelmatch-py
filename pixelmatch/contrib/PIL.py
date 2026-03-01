@@ -1,5 +1,6 @@
 """Functions to facilitate direct comparison of PIL.Image instances"""
 
+import warnings
 from typing import List, Optional, Tuple
 
 import PIL.Image
@@ -99,7 +100,15 @@ def from_PIL_to_raw_data(pil_img: Image) -> MutableImageSequence:
 
     :param pil_img:
     :return:
+
+    .. deprecated::
+        This internal helper function is deprecated and may be removed in a future release.
     """
+    warnings.warn(
+        "from_PIL_to_raw_data is deprecated and may be removed in a future release.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return list(pil_img.convert("RGBA").tobytes())
 
 
@@ -110,5 +119,13 @@ def to_PIL_from_raw_data(
     Converts from the internal raw data format of [R1, G1, B1, A1, R2, ...] to PIL's raw data format, ie
     [(R1, B1, A1, A1), (R2, ...), ...]
     :return: raw image data in a PIL appropriate format
+
+    .. deprecated::
+        This internal helper function is deprecated and may be removed in a future release.
     """
+    warnings.warn(
+        "to_PIL_from_raw_data is deprecated and may be removed in a future release.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return [*zip(raw_data[::4], raw_data[1::4], raw_data[2::4], raw_data[3::4])]
