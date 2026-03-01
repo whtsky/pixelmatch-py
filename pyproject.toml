@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pixelmatch"
-version = "0.3.0"
+version = "0.3.1"
 description = "A pixel-level image comparison library."
 authors = ["Wu Haotian <whtsky@gmail.com>"]
 license = "ISC"

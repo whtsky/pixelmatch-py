@@ -89,6 +89,11 @@ Compares two images, writes the output diff and returns the number of mismatched
 
 ## Changelog
 
+### v0.3.1
+
+- fix: remove use of deprecated Pillow function [#178](https://github.com/whtsky/pixelmatch-py/pull/178) ([@brianhelba](https://github.com/brianhelba))
+- chore: drop EOL Python versions (3.7-3.9), add support for 3.10-3.14 [#171](https://github.com/whtsky/pixelmatch-py/pull/171)
+
 ### v0.3.0
 
 - feat: add fail_fast option [#144](https://github.com/whtsky/pixelmatch-py/pull/144)
