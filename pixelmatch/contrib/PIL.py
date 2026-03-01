@@ -1,12 +1,12 @@
 """Functions to facilitate direct comparison of PIL.Image instances"""
 
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import PIL.Image
 from PIL.Image import Image
 
 from pixelmatch import core
-from pixelmatch.types import ImageSequence, MutableImageSequence, RGBTuple
+from pixelmatch.types import RGBTuple
 
 
 def pixelmatch(
@@ -90,25 +90,3 @@ def _draw_grayscale(img_rgba: Image, alpha: float, output: Image) -> None:
     # Where mask is high, show luminance; where low, show white.
     blended = PIL.Image.composite(image1=luminance, image2=white, mask=blend_weight)
     output.paste(PIL.Image.merge("RGBA", (blended, blended, blended, white)))
-
-
-def from_PIL_to_raw_data(pil_img: Image) -> MutableImageSequence:
-    """
-    Converts a PIL.Image object from [(R1, B1, A1, A1), (R2, ...), ...] to our raw data format
-    [R1, G1, B1, A1, R2, ...].
-
-    :param pil_img:
-    :return:
-    """
-    return list(pil_img.convert("RGBA").tobytes())
-
-
-def to_PIL_from_raw_data(
-    raw_data: ImageSequence,
-) -> List[Tuple[float, float, float, float]]:
-    """
-    Converts from the internal raw data format of [R1, G1, B1, A1, R2, ...] to PIL's raw data format, ie
-    [(R1, B1, A1, A1), (R2, ...), ...]
-    :return: raw image data in a PIL appropriate format
-    """
-    return [*zip(raw_data[::4], raw_data[1::4], raw_data[2::4], raw_data[3::4])]
