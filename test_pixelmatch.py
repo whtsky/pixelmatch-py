@@ -137,3 +137,61 @@ def test_PIL_pixelmatch(
     ), "diff image"
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"
+
+def test_PIL_pixelmatch_identical_images_diff_mask_output_stays_blank(benchmark):
+    """
+    When diff_mask=True and images are identical, output must remain blank
+    and the return value must be 0.
+    """
+    img = read_img("1a")
+    output = Image.new("RGBA", img.size)
+
+    result = benchmark(PIL.pixelmatch, img, img, output, threshold=0, diff_mask=True)
+
+    assert result == 0
+    assert list(output.tobytes()) == [0] * len(output.tobytes())
+
+
+@pytest.mark.parametrize(
+    "alpha,fixture",
+    [
+        (0.0, "1a_identical_alpha00"),
+        (0.1, "1a_identical_alpha01"),
+        (0.5, "1a_identical_alpha05"),
+        (1.0, "1a_identical_alpha10"),
+    ],
+)
+def test_PIL_pixelmatch_identical_images_output_matches_core(alpha, fixture, benchmark):
+    """
+    For identical images with output requested, PIL.pixelmatch must produce
+    the same pixel values as core.pixelmatch for any alpha value.
+    Golden fixtures were generated from core.pixelmatch on master.
+    """
+    img = read_img("1a")
+    pil_output = Image.new("RGBA", img.size)
+    benchmark(PIL.pixelmatch, img, img, pil_output, threshold=0, alpha=alpha)
+    assert pil_to_flatten_data(pil_output) == pil_to_flatten_data(read_img(fixture))
+
+
+@pytest.mark.parametrize(
+    "alpha,fixture",
+    [
+        (0.0, "transparent_identical_alpha00"),
+        (0.1, "transparent_identical_alpha01"),
+        (0.5, "transparent_identical_alpha05"),
+        (1.0, "transparent_identical_alpha10"),
+    ],
+)
+def test_PIL_pixelmatch_identical_transparent_images_output_matches_core(
+    alpha, fixture, benchmark
+):
+    """
+    For identical fully-transparent images with output requested,
+    PIL.pixelmatch must produce the same pixel values as core.pixelmatch
+    for any alpha value.
+    Golden fixtures were generated from core.pixelmatch on master.
+    """
+    img = Image.new("RGBA", (4, 4), (100, 150, 200, 0))
+    pil_output = Image.new("RGBA", img.size)
+    benchmark(PIL.pixelmatch, img, img, pil_output, threshold=0, alpha=alpha)
+    assert pil_to_flatten_data(pil_output) == pil_to_flatten_data(read_img(fixture))
