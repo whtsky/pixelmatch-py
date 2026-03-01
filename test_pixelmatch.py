@@ -138,6 +138,7 @@ def test_PIL_pixelmatch(
     assert mismatch == expected_mismatch, "number of mismatched pixels"
     assert mismatch == mismatch2, "number of mismatched pixels without diff"
 
+
 def test_PIL_pixelmatch_identical_images_diff_mask_output_stays_blank(benchmark):
     """
     When diff_mask=True and images are identical, output must remain blank
