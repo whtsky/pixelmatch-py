@@ -20,7 +20,7 @@ pytest = ">=8.0"
 pytest-cov = ">=5.0"
 pillow = ">=10.0"
 pytest-benchmark = ">=4.0"
-pytest-mypy = ">=0.10.3"
+pytest-mypy = ">=1.0.1"
 mypy = ">=1.19.1"
 
 [build-system]
