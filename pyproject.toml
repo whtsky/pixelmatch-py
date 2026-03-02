@@ -19,7 +19,7 @@ black = ">=26.1.0"
 pytest = ">=9.0.2"
 pytest-cov = ">=7.0.0"
 pillow = ">=10.0"
-pytest-benchmark = ">=4.0"
+pytest-benchmark = ">=5.2.3"
 pytest-mypy = ">=1.0.1"
 mypy = ">=1.19.1"
 
