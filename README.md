@@ -89,6 +89,12 @@ Compares two images, writes the output diff and returns the number of mismatched
 
 ## Changelog
 
+### v0.4.0
+
+- BREAKING CHANGE: remove `pixelmatch.contrib.PIL.from_PIL_to_raw_data` and `pixelmatch.contrib.PIL.to_PIL_from_raw_data` [#181](https://github.com/whtsky/pixelmatch-py/pull/181) ([@brianhelba](https://github.com/brianhelba))
+- BREAKING CHANGE: `pixelmatch.contrib.PIL.pixelmatch` now uses a fast path for byte-identical images; when `output` is provided and `diff_mask=False`, grayscale diff output values can differ from previous versions (typically up to +/-1 per channel due to PIL rounding) [#181](https://github.com/whtsky/pixelmatch-py/pull/181) ([@brianhelba](https://github.com/brianhelba))
+- perf: improve `pixelmatch.contrib.PIL.pixelmatch` performance (about 90x for identical images with `diff_mask=False`, about 150x with `diff_mask=True`) [#181](https://github.com/whtsky/pixelmatch-py/pull/181) ([@brianhelba](https://github.com/brianhelba))
+
 ### v0.3.1
 
 - fix: remove use of deprecated Pillow function [#178](https://github.com/whtsky/pixelmatch-py/pull/178) ([@brianhelba](https://github.com/brianhelba))
