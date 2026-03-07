@@ -51,6 +51,8 @@ testdata = [
     ["6a", "6a", "6empty", {"threshold": 0}, 0],
     ["7a", "7b", "7diff", OPTIONS, 9856],
 ]
+pil_testdata = list(testdata)
+pil_testdata[8] = ["6a", "6a", "6empty_pil", {"threshold": 0}, 0]
 
 
 @pytest.mark.parametrize(
@@ -115,7 +117,7 @@ def test_pixelmatch_failfast(
 
 
 @pytest.mark.parametrize(
-    "img_path_1,img_path_2,diff_path,options,expected_mismatch", testdata
+    "img_path_1,img_path_2,diff_path,options,expected_mismatch", pil_testdata
 )
 def test_PIL_pixelmatch(
     img_path_1: str,
@@ -156,10 +158,10 @@ def test_PIL_pixelmatch_identical_images_diff_mask_output_stays_blank(benchmark)
 @pytest.mark.parametrize(
     "alpha,fixture",
     [
-        (0.0, "1a_identical_alpha00"),
-        (0.1, "1a_identical_alpha01"),
-        (0.5, "1a_identical_alpha05"),
-        (1.0, "1a_identical_alpha10"),
+        (0.0, "1a_identical_pil_alpha00"),
+        (0.1, "1a_identical_pil_alpha01"),
+        (0.5, "1a_identical_pil_alpha05"),
+        (1.0, "1a_identical_pil_alpha10"),
     ],
 )
 def test_PIL_pixelmatch_identical_images_output_matches_core(alpha, fixture, benchmark):
