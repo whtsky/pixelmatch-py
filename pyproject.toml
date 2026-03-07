@@ -15,7 +15,7 @@ packages = [
 python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
-black = ">=26.1.0"
+black = ">=26.3.0"
 pytest = ">=9.0.2"
 pytest-cov = ">=7.0.0"
 pillow = ">=10.0"
