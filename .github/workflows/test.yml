@@ -54,7 +54,7 @@ jobs:
       - run: pip install poetry
       - run: poetry install
       - run: poetry run pytest --mypy --cov=pixelmatch --cov-report xml --cov-report term-missing --benchmark-disable
-      - uses: codecov/codecov-action@v6
+      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6.0.2
   bench:
     name: Run Benchmark on Python 3.13
     runs-on: ubuntu-latest
