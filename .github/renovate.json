@@ -1,3 +1,4 @@
 {
-  "extends": ["@whtsky"]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>whtsky/renovate-config"]
 }
