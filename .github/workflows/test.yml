@@ -75,7 +75,7 @@ jobs:
           path: ./cache
           key: ${{ runner.os }}-benchmark
       - name: Store benchmark result
-        uses: rhysd/github-action-benchmark@v1
+        uses: rhysd/github-action-benchmark@ccb55e404cbf69e42d0ac9671108fcad577241e7 # v1.0.2
         with:
           tool: "pytest"
           output-file-path: output.json
