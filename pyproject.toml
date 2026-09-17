@@ -21,7 +21,7 @@ pytest-cov = "==7.1.0"
 pillow = "==12.3.0"
 pytest-benchmark = "==5.2.3"
 pytest-mypy = "==1.0.1"
-mypy = "==1.20.1"
+mypy = "==1.20.2"
 
 [build-system]
 requires = ["poetry_core>=2.4.1"]
