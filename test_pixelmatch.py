@@ -198,3 +198,142 @@ def test_PIL_pixelmatch_identical_transparent_images_output_matches_core(
     pil_output = Image.new("RGBA", img.size)
     benchmark(PIL.pixelmatch, img, img, pil_output, threshold=0, alpha=alpha)
     assert pil_to_flatten_data(pil_output) == pil_to_flatten_data(read_img(fixture))
+
+
+def _half_ignore_mask(width: int, height: int):
+    """Mask the first half of the pixels (top half of the image), like upstream's tests."""
+    size = width * height
+    return [1 if i <= size / 2 else 0 for i in range(size)]
+
+
+def _pixels(data, width: int, height: int):
+    return [tuple(data[4 * i : 4 * i + 4]) for i in range(width * height)]
+
+
+def test_pixelmatch_ignore_mask():
+    img1 = read_img("1a")
+    img2 = read_img("1b")
+    width, height = img1.size
+    img1_data = pil_to_flatten_data(img1)
+    img2_data = pil_to_flatten_data(img2)
+    ignore_mask = _half_ignore_mask(width, height)
+
+    unmasked_output = [0.0] * len(img1_data)
+    pixelmatch(img1_data, img2_data, width, height, unmasked_output, **OPTIONS)
+    unchanged_output = [0.0] * len(img1_data)
+    pixelmatch(img1_data, img1_data, width, height, unchanged_output, **OPTIONS)
+
+    masked_output = [0.0] * len(img1_data)
+    mismatch = pixelmatch(
+        img1_data,
+        img2_data,
+        width,
+        height,
+        masked_output,
+        ignore_mask=ignore_mask,
+        **OPTIONS,
+    )
+
+    unmasked_pixels = _pixels(unmasked_output, width, height)
+    masked_pixels = _pixels(masked_output, width, height)
+    unchanged_pixels = _pixels(unchanged_output, width, height)
+    diff_in_unmasked_area = sum(
+        1
+        for i, pixel in enumerate(unmasked_pixels)
+        if not ignore_mask[i] and pixel == (255, 0, 0, 255)
+    )
+
+    assert 0 < mismatch < 143
+    assert mismatch == diff_in_unmasked_area
+    for i in range(width * height):
+        if ignore_mask[i]:
+            assert masked_pixels[i] == unchanged_pixels[i], "masked pixel drawn"
+        else:
+            assert masked_pixels[i] == unmasked_pixels[i], "unmasked pixel changed"
+    assert mismatch == pixelmatch(
+        img1_data, img2_data, width, height, ignore_mask=ignore_mask, **OPTIONS
+    )
+
+
+def test_pixelmatch_ignore_mask_fast_path():
+    img1 = read_img("1a")
+    width, height = img1.size
+    img1_data = pil_to_flatten_data(img1)
+    img2_data = list(img1_data)
+    ignore_mask = [0] * (width * height)
+    for i in range(0, width * height, 7):
+        ignore_mask[i] = 255
+        img2_data[4 * i : 4 * i + 3] = [255 - v for v in img2_data[4 * i : 4 * i + 3]]
+    assert pixelmatch(img1_data, img2_data, width, height, **OPTIONS) > 0
+
+    output = [0.0] * len(img1_data)
+    expected_output = [0.0] * len(img1_data)
+    pixelmatch(img1_data, img1_data, width, height, expected_output, **OPTIONS)
+
+    mismatch = pixelmatch(
+        img1_data,
+        img2_data,
+        width,
+        height,
+        output,
+        ignore_mask=ignore_mask,
+        **OPTIONS,
+    )
+    assert mismatch == 0
+    assert output == expected_output
+    assert (
+        pixelmatch(
+            img1_data,
+            img2_data,
+            width,
+            height,
+            fail_fast=True,
+            ignore_mask=ignore_mask,
+            **OPTIONS,
+        )
+        == 0
+    )
+
+
+def test_pixelmatch_ignore_mask_size_mismatch():
+    img1_data = [0] * (4 * 20 * 20)
+    with pytest.raises(ValueError, match="Ignore mask size"):
+        pixelmatch(img1_data, img1_data, 20, 20, ignore_mask=[0] * (4 * 20 * 20))
+    with pytest.raises(ValueError, match="Ignore mask size"):
+        PIL.pixelmatch(
+            Image.new("RGBA", (20, 20)),
+            Image.new("RGBA", (20, 20)),
+            ignore_mask=[0] * 10,
+        )
+    with pytest.raises(ValueError, match="Ignore mask size"):
+        PIL.pixelmatch(
+            Image.new("RGBA", (20, 20)),
+            Image.new("RGBA", (20, 20)),
+            ignore_mask=Image.new("L", (10, 10)),
+        )
+
+
+def test_PIL_pixelmatch_ignore_mask():
+    img1 = read_img("1a")
+    img2 = read_img("1b")
+    width, height = img1.size
+    ignore_mask = _half_ignore_mask(width, height)
+    expected_output = [0.0] * (4 * width * height)
+    expected_mismatch = pixelmatch(
+        pil_to_flatten_data(img1),
+        pil_to_flatten_data(img2),
+        width,
+        height,
+        expected_output,
+        ignore_mask=ignore_mask,
+        **OPTIONS,
+    )
+
+    mask_image = Image.new("1", img1.size)
+    mask_image.putdata(ignore_mask)
+
+    for mask in (ignore_mask, mask_image, mask_image.convert("L")):
+        output = Image.new("RGBA", img1.size)
+        mismatch = PIL.pixelmatch(img1, img2, output, ignore_mask=mask, **OPTIONS)
+        assert mismatch == expected_mismatch
+        assert pil_to_flatten_data(output) == expected_output
