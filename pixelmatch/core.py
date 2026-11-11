@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from .types import ImageSequence, MutableImageSequence, RGBTuple
 from .utils import antialiased, color_delta, draw_gray_pixel, draw_pixel
@@ -17,6 +17,7 @@ def pixelmatch(
     diff_color: RGBTuple = (255, 0, 0),
     diff_mask: bool = False,
     fail_fast: bool = False,
+    ignore_mask: Optional[Sequence[int]] = None,
 ) -> int:
     """
     Compares two images, writes the output diff and returns the number of mismatched pixels.
@@ -39,6 +40,9 @@ def pixelmatch(
     :param diff_mask: whether or not to draw the diff over a transparent background (a mask),
         defaults to False
     :param fail_fast: if true, will return after first different pixel. Defaults to false
+    :param ignore_mask: one value per pixel (``width * height`` long); pixels with a non-zero
+        value are excluded from the comparison and drawn as unchanged in the diff output.
+        Defaults to None (compare every pixel)
     :return: number of pixels that are different or 1 if fail_fast == true
     """
 
@@ -56,8 +60,21 @@ def pixelmatch(
             width * height * 4,
         )
 
-    # fast path if identical
-    if img1 == img2:
+    if ignore_mask is not None and len(ignore_mask) != width * height:
+        raise ValueError(
+            "Ignore mask size does not match width/height.",
+            len(ignore_mask),
+            width * height,
+        )
+
+    # fast path if identical (ignoring masked pixels)
+    if img1 == img2 or (
+        ignore_mask is not None
+        and all(
+            ignore_mask[i] or img1[4 * i : 4 * i + 4] == img2[4 * i : 4 * i + 4]
+            for i in range(width * height)
+        )
+    ):
         if output and not diff_mask:
             for i in range(width * height):
                 draw_gray_pixel(img1, 4 * i, alpha, output)
@@ -77,8 +94,12 @@ def pixelmatch(
         for x in range(width):
             pos = (y * width + x) * 4
 
-            # squared YUV distance between colors at this pixel position
-            delta = color_delta(img1, img2, pos, pos)
+            # squared YUV distance between colors at this pixel position;
+            # pixels covered by the ignore mask are treated as unchanged
+            if ignore_mask is not None and ignore_mask[y * width + x]:
+                delta = 0.0
+            else:
+                delta = color_delta(img1, img2, pos, pos)
 
             # the color difference is above the threshold
             if delta > maxDelta:
