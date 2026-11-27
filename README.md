@@ -59,7 +59,7 @@ mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 
 ## API
 
-### pixelmatch(img1, img2, width, height, output, threshold, includeAA, alpha, aa_color, diff_color, diff_mask, fail_fast)
+### pixelmatch(img1, img2, width, height, output, threshold, includeAA, alpha, aa_color, diff_color, diff_mask, fail_fast, ignore_mask)
 
 - `img1`, `img2` — RGBA Image data of the images to compare. **Note:** image dimensions must be equal.
 - `width`, `height` — Width and height of the images.
@@ -71,12 +71,13 @@ mismatch = pixelmatch(img_a, img_b, width, height, data_diff, includeAA=True)
 - `diff_color` — The color of differing pixels in the diff output in `[R, G, B]` format. `[255, 0, 0]` by default.
 - `diff_mask` — Draw the diff over a transparent background (a mask), rather than over the original image. Will not draw anti-aliased pixels (if detected).
 - `fail_fast` - If true, will return after first different pixel.
+- `ignore_mask` — A sequence with one value per pixel (`width * height` long, e.g. a `list[int]` or `bytes`); pixels with a non-zero value are excluded from the comparison and drawn as unchanged in the diff output. `None` by default.
 
 Compares two images, writes the output diff and returns the number of mismatched pixels.
 
 ### contrib.PIL.pixelmatch
 
-Compares two images, writes the output diff and returns the number of mismatched pixels. Exact same API as `pixelmatch.pixelmatch` except for the important fact that it takes instances of PIL.Image for image parameters (`img1`, `img2`, and `output`) and the width/size need not be specified.
+Compares two images, writes the output diff and returns the number of mismatched pixels. Exact same API as `pixelmatch.pixelmatch` except for the important fact that it takes instances of PIL.Image for image parameters (`img1`, `img2`, and `output`) and the width/size need not be specified. `ignore_mask` can be either a PIL.Image of the same size (converted to grayscale, so any non-black pixel is ignored) or a sequence with one value per pixel.
 
 ## Example output
 

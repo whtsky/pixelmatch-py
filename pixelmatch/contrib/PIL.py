@@ -1,6 +1,6 @@
 """Functions to facilitate direct comparison of PIL.Image instances"""
 
-from typing import Optional
+from typing import Optional, Sequence, Union
 
 import PIL.Image
 from PIL.Image import Image
@@ -20,6 +20,7 @@ def pixelmatch(
     diff_color: RGBTuple = (255, 0, 0),
     diff_mask: bool = False,
     fail_fast: bool = False,
+    ignore_mask: Optional[Union[Image, Sequence[int]]] = None,
 ) -> int:
     """
     Compares two images, writes the output diff and returns the number of mismatched pixels.
@@ -40,9 +41,27 @@ def pixelmatch(
     :param diff_mask: whether or not to draw the diff over a transparent background (a mask),
         defaults to False
     :param fail_fast: if true, will return after first different pixel. Defaults to false
+    :param ignore_mask: PIL.Image of the same size as img1 (converted to grayscale "L") or a
+        sequence with one value per pixel; pixels with a non-zero value are excluded from the
+        comparison and drawn as unchanged in the diff output. Defaults to None
     :return: number of pixels that are different or 1 if fail_fast == true
     """
     width, height = img1.size
+    ignore_mask_data: Optional[Sequence[int]]
+    if isinstance(ignore_mask, Image):
+        if ignore_mask.size != img1.size:
+            raise ValueError(
+                "Ignore mask size does not match img1.", ignore_mask.size, img1.size
+            )
+        ignore_mask_data = ignore_mask.convert("L").tobytes()
+    else:
+        ignore_mask_data = ignore_mask
+    if ignore_mask_data is not None and len(ignore_mask_data) != width * height:
+        raise ValueError(
+            "Ignore mask size does not match width/height.",
+            len(ignore_mask_data),
+            width * height,
+        )
     img1_rgba = img1.convert("RGBA")
     img2_rgba = img2.convert("RGBA")
     img1_bytes = img1_rgba.tobytes()
@@ -73,6 +92,7 @@ def pixelmatch(
         diff_color=diff_color,
         diff_mask=diff_mask,
         fail_fast=fail_fast,
+        ignore_mask=ignore_mask_data,
     )
 
     if output_data is not None and output is not None:
